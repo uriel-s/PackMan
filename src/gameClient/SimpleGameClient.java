@@ -4,11 +4,13 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import Server.Game_Server;
 import Server.game_service;
+import dataStructure.DGraph;
 import oop_dataStructure.OOP_DGraph;
 import oop_dataStructure.oop_edge_data;
 import oop_dataStructure.oop_graph;
@@ -37,7 +39,7 @@ public class SimpleGameClient {
 		int scenario_num = 2;
 		game_service game = Game_Server.getServer(scenario_num); // you have [0,23] games
 		String g = game.getGraph();
-		OOP_DGraph gg = new OOP_DGraph();
+		DGraph gg = new DGraph();
 		gg.init(g);
 		graph_gui grp = new graph_gui(gg);
 		grp.setVisible(true);
@@ -45,7 +47,7 @@ public class SimpleGameClient {
 		JSONObject line;
 		try {
 			line = new JSONObject(info);
-			JSONObject ttt = line.getJSONObject("GameServer");
+			JSONArray ttt = line.getJSONArray("Edges");
 			int rs = ttt.getInt("robots");
 			System.out.println(info);
 			System.out.println(g);
