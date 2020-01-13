@@ -53,6 +53,9 @@ public class DGraph implements graph ,Serializable{
 
 	}
 
+
+
+
 	public void init(String json_file) {
 		JSONObject line;
 		try {
