@@ -209,197 +209,171 @@ public class graph_gui extends JFrame implements ActionListener, MouseListener
 		{
 			paint();
 		}
-//		if(str.equals("choose level"))
-//		{
-//			choose_level();
-//		}
-//		if(str.equals("shortest Path way"))
-//		{
-//			shortest_Path();
-//		}
-//		if(str.equals("tsp")) {
-//			tsp();
-//		}
-//		if(str.equals("isConnected")) {
-//			isConnected();
-//		}
-//		if(str.equals("save to file")) {
-//			saveToFile();
-//		}
-//		if(str.equals("draw from file")) {
-//			drawfromfile();
-//		}
+		if(str.equals("choose level"))
+		{
+			choose_level();
+		}
+		if(str.equals("shortest Path way"))
+		{
+			shortest_Path();
+		}
+		if(str.equals("tsp")) {
+			tsp();
+		}
+		if(str.equals("isConnected")) {
+			isConnected();
+		}
+		if(str.equals("save to file")) {
+			saveToFile();
+		}
+		if(str.equals("draw from file")) {
+			drawfromfile();
+		}
 
 	}
-//  private void choose_level() {
-//	  try {
-//			JFrame in = new JFrame();
-//			String level = JOptionPane.showInputDialog(in,"choose a level [0-23]:");
-//			int scenario_num =Integer.parseInt(level); 
-//			game_service game = Game_Server.getServer(scenario_num); 
-//			String g = game.getGraph();
-//			OOP_DGraph ggg = new OOP_DGraph();
-//			 ggg.init(g);
-//			paint();
-//			String info = game.toString();
-//			JSONObject line;
-//			try {
-//				line = new JSONObject(info);
-//				JSONObject ttt = line.getJSONObject("GameServer");
-//				int rs = ttt.getInt("robots");
-//				System.out.println(info);
-//				System.out.println(g);
-//				// the list of fruits should be considered in your solution
-//				Iterator<String> f_iter = game.getFruits().iterator();
-//				while(f_iter.hasNext()) {System.out.println(f_iter.next());}	
-//				int src_node = 0;  // arbitrary node, you should start at one of the fruits
-//				for(int a = 0;a<rs;a++) {
-//					game.addRobot(src_node+a);
-//				}
-//			}
-//			catch (JSONException e) {e.printStackTrace();}
-//			game.startGame();
-//			// should be a Thread!!!
-//			while(game.isRunning()) {
-//				moveRobots(game, gr);
-//			}
-//			String results = game.toString();
-//			System.out.println("Game Over: "+results);
-//	  }
-//	  
-//	  catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//  }
+  private void choose_level() {
+	  try {
+			JFrame in = new JFrame();
+			String level = JOptionPane.showInputDialog(in,"choose a level [0-23]:");
+			int scenario_num =Integer.parseInt(level); 
+			game_service game = Game_Server.getServer(scenario_num); 
+			String g = game.getGraph();
+			
+	  }
+	  
+	  catch (Exception e) {
+			e.printStackTrace();
+		}
+  }
 
 
-//	private void tsp() {
-//		try {
-//			List<Integer> targets = new ArrayList<Integer>();
-//			JFrame in = new JFrame();
-//			String str = "-1";
-//			String travel ="";
-//			while(!(travel.equals(str))){
-//				travel = JOptionPane.showInputDialog(in,"Enter targets Node,enter -1 when you finish:");
-//				int s = Integer.parseInt(travel);
-//				targets.add(s);
+	private void tsp() {
+		try {
+			List<Integer> targets = new ArrayList<Integer>();
+			JFrame in = new JFrame();
+			String str = "-1";
+			String travel ="";
+			while(!(travel.equals(str))){
+				travel = JOptionPane.showInputDialog(in,"Enter targets Node,enter -1 when you finish:");
+				int s = Integer.parseInt(travel);
+				targets.add(s);
+			}
+			targets.remove(targets.size()-1);
+			Graph_Algo newTsp = new Graph_Algo();
+			newTsp.init(gr);
+			paint();
+			List<node_data> dis = newTsp.TSP(targets);
+//			for(node_data x : dis) {
+//				System.out.print(x.getKey()+"\t");
 //			}
-//			targets.remove(targets.size()-1);
-//			Graph_Algo newTsp = new Graph_Algo();
-//			newTsp.init(gr);
-//			paint();
-//			List<node_data> dis = newTsp.TSP(targets);
-////			for(node_data x : dis) {
-////				System.out.print(x.getKey()+"\t");
-////			}
-//			paint();
-//			for (int i=0; i<dis.size()-1; i++) {
-//				double x1 = dis.get(i).getLocation().x();
-//				double y1 = dis.get(i).getLocation().y();
-//				double x2 = dis.get(i+1).getLocation().x();
-//				double y2 = dis.get(i+1).getLocation().y();
-//
-//				StdDraw.setPenColor(Color.GREEN);
-//				StdDraw.setPenRadius(0.004);	
-//				StdDraw.line(x1, y1, x2, y2);
-//			}
-//
-//		}
-//		catch (Exception e) {
-//			e.printStackTrace();
-//		}
+			paint();
+			for (int i=0; i<dis.size()-1; i++) {
+				double x1 = dis.get(i).getLocation().x();
+				double y1 = dis.get(i).getLocation().y();
+				double x2 = dis.get(i+1).getLocation().x();
+				double y2 = dis.get(i+1).getLocation().y();
 
-//	}
+				StdDraw.setPenColor(Color.GREEN);
+				StdDraw.setPenRadius(0.004);	
+				StdDraw.line(x1, y1, x2, y2);
+			}
+
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
    /*
     * draw the graph and show on the bottom of the screen if is connected or not
     */
-//
-//	private void isConnected() {
-//		paint();
-//		StdDraw.setPenColor();
-//		StdDraw.setFont();
-//
-//
-//		Graph_Algo graphIsC = new Graph_Algo();
-//		graphIsC.init(gr);
-//		if(graphIsC.isConnected()) {
-//			StdDraw.text(0,-95,"the graph is connected" );
-//
-//		} else {
-//
-//			StdDraw.text(0,-95,"the graph is NOT connected");
-//
-//
-//		}
-//	}
 
-//	private void saveToFile() {
-//		Graph_Algo t=new Graph_Algo();
-//		t.setG(this.gr);
-//		JFileChooser j;
-//		FileNameExtensionFilter filter;
-//
-//		j = new JFileChooser(FileSystemView.getFileSystemView());
-//		j.setDialogTitle("Save graph to file"); 
-//		filter = new FileNameExtensionFilter(" .txt","txt");
-//		j.setFileFilter(filter);
-//
-//		int userSelection = j.showSaveDialog(null);
-//		if (userSelection == JFileChooser.APPROVE_OPTION) {
-//			System.out.println("Save as file: " + j.getSelectedFile().getAbsolutePath());
-//			t.save(j.getSelectedFile().getName());
-//
-//		}
-//	}
-//
-//	private void drawfromfile() {
-//		this.gr = null;
-//		JFileChooser jf = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-//		int returnV = jf.showOpenDialog(null);
-//		Graph_Algo gra = new Graph_Algo();
-//		if (returnV == JFileChooser.APPROVE_OPTION) {
-//			File selected = jf.getSelectedFile();
-//			gra.init(selected.getName());
-//		}
-//		this.gr = gra.getG();
-//		paint();
-//	}
+	private void isConnected() {
+		paint();
+		StdDraw.setPenColor();
+		StdDraw.setFont();
 
-//
-//	public void shortest_Path() {
-//		try {
-//			JFrame in = new JFrame();
-//			String Source = JOptionPane.showInputDialog(in,"Enter Source-Node:");
-//			String Dest = JOptionPane.showInputDialog(in,"Enter Destination-Node:");
-//
-//			int src = Integer.parseInt(Source);
-//			int dest = Integer.parseInt(Dest);
-//
-//			Graph_Algo G = new Graph_Algo();
-//			G.init(gr);
-//
-//			List<node_data> dis = G.shortestPath(src, dest);
-//			double distance = G.shortestPathDist(src, dest);
-//			paint();
-//			StdDraw.setPenColor();
-//			StdDraw.text(0, -95, "the shortest distance between "+src+" --> "+dest+" is :"+distance);
-//			for (int i=0; i<dis.size()-1; i++) {
-//				double x1 = dis.get(i).getLocation().x();
-//				double y1 = dis.get(i).getLocation().y();
-//				double x2 = dis.get(i+1).getLocation().x();
-//				double y2 = dis.get(i+1).getLocation().y();
-//
-//				StdDraw.setPenColor(Color.GREEN);
-//				StdDraw.setPenRadius(0.004);	
-//				StdDraw.line(x1, y1, x2, y2);
-//			}
-//
-//		}
-//		catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//
-//	}
+
+		Graph_Algo graphIsC = new Graph_Algo();
+		graphIsC.init(gr);
+		if(graphIsC.isConnected()) {
+			StdDraw.text(0,-95,"the graph is connected" );
+
+		} else {
+
+			StdDraw.text(0,-95,"the graph is NOT connected");
+
+
+		}
+	}
+
+	private void saveToFile() {
+		Graph_Algo t=new Graph_Algo();
+		t.setG(this.gr);
+		JFileChooser j;
+		FileNameExtensionFilter filter;
+
+		j = new JFileChooser(FileSystemView.getFileSystemView());
+		j.setDialogTitle("Save graph to file"); 
+		filter = new FileNameExtensionFilter(" .txt","txt");
+		j.setFileFilter(filter);
+
+		int userSelection = j.showSaveDialog(null);
+		if (userSelection == JFileChooser.APPROVE_OPTION) {
+			System.out.println("Save as file: " + j.getSelectedFile().getAbsolutePath());
+			t.save(j.getSelectedFile().getName());
+
+		}
+	}
+
+	private void drawfromfile() {
+		this.gr = null;
+		JFileChooser jf = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+		int returnV = jf.showOpenDialog(null);
+		Graph_Algo gra = new Graph_Algo();
+		if (returnV == JFileChooser.APPROVE_OPTION) {
+			File selected = jf.getSelectedFile();
+			gra.init(selected.getName());
+		}
+		this.gr = gra.getG();
+		paint();
+	}
+
+
+	public void shortest_Path() {
+		try {
+			JFrame in = new JFrame();
+			String Source = JOptionPane.showInputDialog(in,"Enter Source-Node:");
+			String Dest = JOptionPane.showInputDialog(in,"Enter Destination-Node:");
+
+			int src = Integer.parseInt(Source);
+			int dest = Integer.parseInt(Dest);
+
+			Graph_Algo G = new Graph_Algo();
+			G.init(gr);
+
+			List<node_data> dis = G.shortestPath(src, dest);
+			double distance = G.shortestPathDist(src, dest);
+			paint();
+			StdDraw.setPenColor();
+			StdDraw.text(0, -95, "the shortest distance between "+src+" --> "+dest+" is :"+distance);
+			for (int i=0; i<dis.size()-1; i++) {
+				double x1 = dis.get(i).getLocation().x();
+				double y1 = dis.get(i).getLocation().y();
+				double x2 = dis.get(i+1).getLocation().x();
+				double y2 = dis.get(i+1).getLocation().y();
+
+				StdDraw.setPenColor(Color.GREEN);
+				StdDraw.setPenRadius(0.004);	
+				StdDraw.line(x1, y1, x2, y2);
+			}
+
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -428,47 +402,7 @@ public class graph_gui extends JFrame implements ActionListener, MouseListener
 	public void mouseExited(MouseEvent e) {
 		//System.out.println("mouseExited");
 	}
-	private static void moveRobots(game_service game, DGraph gg) {
-		List<String> log = game.move();
-		if(log!=null) {
-			long t = game.timeToEnd();
-			for(int i=0;i<log.size();i++) {
-				String robot_json = log.get(i);
-				try {
-					JSONObject line = new JSONObject(robot_json);
-					JSONObject ttt = line.getJSONObject("Robot");
-					int rid = ttt.getInt("id");
-					int src = ttt.getInt("src");
-					int dest = ttt.getInt("dest");
-				
-					if(dest==-1) {	
-						dest = nextNode(gg, src);
-						game.chooseNextEdge(rid, dest);
-						System.out.println("Turn to node: "+dest+"  time to end:"+(t/1000));
-						System.out.println(ttt);
-					}
-				} 
-				catch (JSONException e) {e.printStackTrace();}
-			}
-		}
-	}
-	/**
-	 * a very simple random walk implementation!
-	 * @param g
-	 * @param src
-	 * @return
-	 */
-	private static int nextNode(DGraph g, int src) {
-		int ans = -1;
-		Collection<edge_data> ee = g.getE(src);
-		Iterator<edge_data> itr = ee.iterator();
-		int s = ee.size();
-		int r = (int)(Math.random()*s);
-		int i=0;
-		while(i<r) {itr.next();i++;}
-		ans = itr.next().getDest();
-		return ans;
-	}
+	
 
 
 

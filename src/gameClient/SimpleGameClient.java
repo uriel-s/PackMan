@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -48,7 +49,7 @@ public class SimpleGameClient {
 		JSONObject line; 
 		try {
 			line = new JSONObject(info);
-			JSONObject ttt = line.getJSONObject("GameServer");
+			JSONArray ttt = line.getJSONArray("Edges");
 			int rs = ttt.getInt("robots");
 			System.out.println(info);
 			System.out.println(g);

@@ -24,7 +24,7 @@ public class DGraph implements graph ,Serializable{
 	public static  int I=0;
 	//constructors/
 
-	public  DGraph() 
+	public  DGraph()
 	{
 		HashMap h=new HashMap<Integer, node_data>();
 		this.Vertex= h;
@@ -63,11 +63,11 @@ public class DGraph implements graph ,Serializable{
 			JSONArray Nodes = line.getJSONArray("Nodes");
 			JSONArray Edges = line.getJSONArray("Edges");
 
-			
+
 			for(int i =0; i< Nodes.length();i++)
 			{
-				DNode n=	new DNode();			
-				
+				DNode n=	new DNode();
+
 				int id = Nodes.getJSONObject(i).getInt("id");
 				String loction = Nodes.getJSONObject(i).getString("pos");
 				Point3D p= getloc(loction);
@@ -77,8 +77,8 @@ public class DGraph implements graph ,Serializable{
 			}
 			for(int i =0; i< Edges.length();i++)
 			{
-				Dedge d  =	new Dedge();			
-				
+				Dedge d  =	new Dedge();
+
 				int src = Edges.getJSONObject(i).getInt("src");
 				int dest = Edges.getJSONObject(i).getInt("dest");
 				int w = Edges.getJSONObject(i).getInt("w");
@@ -90,8 +90,8 @@ public class DGraph implements graph ,Serializable{
 				n.AddEdge(d);
 			}
 		}
-		catch (JSONException e) {e.printStackTrace();}			
-		
+		catch (JSONException e) {e.printStackTrace();}
+
 	}
 
 	public Point3D getloc (String s)
@@ -100,19 +100,19 @@ public class DGraph implements graph ,Serializable{
 		double x = Double.parseDouble(locations[0]);
 		double y = Double.parseDouble(locations[1]);
 		double z = Double.parseDouble(locations[2]);
-		Point3D p = new Point3D(x,y,z);	
+		Point3D p = new Point3D(x,y,z);
 		return p;
 	}
 
 
 	//function that (deep) copy the vertexes in a graph/()
 	public HashMap<Integer, node_data> DeepCopyVertex(HashMap<Integer, node_data> vertex)
-	{ 
-		HashMap<Integer, node_data> ans = new HashMap<>(); 	
+	{
+		HashMap<Integer, node_data> ans = new HashMap<>();
 		Iterator<node_data> I=   this.getV().iterator();
 		DNode n= new  DNode();
 		DNode copiedNode = new DNode();
-		while(I.hasNext()) 
+		while(I.hasNext())
 		{
 			n=  (DNode) I.next();
 			copiedNode=  n.copyN(n);
@@ -129,17 +129,17 @@ public class DGraph implements graph ,Serializable{
 			System.out.println("this graph is empty");
 			return null;
 		}
-		if(!this.Vertex.containsKey(key)) 
-		{			
+		if(!this.Vertex.containsKey(key))
+		{
 			throw new  RuntimeException("Node is  not exist"+key);
 		}
 		return this.Vertex.get(key);
 	}
 
 	@Override
-	public edge_data getEdge(int src, int dest) 
+	public edge_data getEdge(int src, int dest)
 	{
-		if(!this.Vertex.containsKey(src))  
+		if(!this.Vertex.containsKey(src))
 			throw new  RuntimeException("src not exist");
 		if(!Vertex.containsKey(dest))
 			throw new  RuntimeException("destetion not exist");
@@ -150,12 +150,12 @@ public class DGraph implements graph ,Serializable{
 			System.out.println("edge is not exist");
 			return null;
 		}
-		Dedge e=n.getEdge(dest); 
+		Dedge e=n.getEdge(dest);
 		return e;
 	}
 
 	public HashMap getVErtex()
-	{ 
+	{
 		return this.Vertex ;
 	}
 	@Override
@@ -165,7 +165,7 @@ public class DGraph implements graph ,Serializable{
 		MC++;
 	}
 	//this function make Edge between two Vertexes.
-	@Override 
+	@Override
 	public void connect(int src, int dest, double w) {
 
 		if(!Vertex.containsKey(src)) {
@@ -180,7 +180,7 @@ public class DGraph implements graph ,Serializable{
 		e.setDest(dest);
 		e.setWeight(w);
 		DNode n = (DNode) this.Vertex.get(src);
-		n.AddEdge(e);  
+		n.AddEdge(e);
 		Ecounter++;
 		MC++;
 	}
@@ -195,7 +195,7 @@ public class DGraph implements graph ,Serializable{
 		DNode n = (DNode) this.getNode(node_id);
 		return n.getEdges().values();
 	}
-	//delete node from the graph . 
+	//delete node from the graph .
 	@Override
 	public node_data removeNode(int key)
 	{
@@ -216,10 +216,10 @@ public class DGraph implements graph ,Serializable{
 				n.getEdges().remove(key);
 				Ecounter--;
 				MC++;
-			}				
+			}
 		}
 
-		this.Vertex.remove(key); 
+		this.Vertex.remove(key);
 		IDcounter--;
 		MC++;
 		return x;
@@ -229,7 +229,7 @@ public class DGraph implements graph ,Serializable{
 	public edge_data removeEdge(int src, int dest) {
 		if(!Vertex.containsKey(src)) {
 			throw new  RuntimeException("src not exist");}
-		if(!Vertex.containsKey(dest)) 
+		if(!Vertex.containsKey(dest))
 			throw new  RuntimeException("dest not exist");
 
 		DNode n=(DNode) this.Vertex.get(src);
