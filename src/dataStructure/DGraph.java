@@ -53,31 +53,7 @@ public class DGraph implements graph ,Serializable{
 
 	}
 
-	//	private void initToJson(String g) {
-	//        try {
-	//            JSONObject line = new JSONObject(g);
-	//            JSONArray nodesArr = line.getJSONArray("Nodes");
-	//            for(int i = 0; i < nodesArr.length(); i++) {
-	//                String pos = nodesArr.getJSONObject(i).getString("pos");
-	//                String[] locations = pos.split(",");
-	//                double x = Double.parseDouble(locations[0]);
-	//                double y = Double.parseDouble(locations[1]);
-	//                double z = Double.parseDouble(locations[2]);
-	//                Point3D p = new Point3D(x,y,z);
-	//                int key = nodesArr.getJSONObject(i).getInt("id");
-	//                addNode(new Node(key, p));
-	//            }
-	//            JSONArray edgeArr = line.getJSONArray("Edges");
-	//            for(int i = 0; i < edgeArr.length(); i++) {
-	//                int src = edgeArr.getJSONObject(i).getInt("src");
-	//                double w = edgeArr.getJSONObject(i).getDouble("w");
-	//                int dest = edgeArr.getJSONObject(i).getInt("dest");
-	//                connect(src, dest, w);
-	//            }
-	//        } catch (JSONException e) {
-	//            e.printStackTrace();
-	//        }
-	//    }
+	
 
 
 	public void init(String json_file) {

@@ -60,9 +60,9 @@ import utils.*;
 public class graph_gui extends JFrame implements ActionListener, MouseListener
 
 {
-	OOP_DGraph gr;
+	DGraph gr;
 
-	public graph_gui(OOP_DGraph g)
+	public graph_gui(DGraph g)
 	{
 		this.gr=g;
 		initGUI(gr);
@@ -76,7 +76,7 @@ public class graph_gui extends JFrame implements ActionListener, MouseListener
 	 * initiate a gui window using JFrame which shows a menu of choices do display and draw them
 	 * using the algorithms of the project   
 	 */
-	private void initGUI(OOP_DGraph gr) 
+	private void initGUI(DGraph gr) 
 	{
 		this.setSize(500, 500);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -129,10 +129,10 @@ public class graph_gui extends JFrame implements ActionListener, MouseListener
 		StdDraw.setCanvasSize(1000, 500);
 		StdDraw.setXscale(35,36);
 		StdDraw.setYscale(32,33);
-		Collection<oop_node_data> search = gr.getV();
+		Collection<node_data> search = gr.getV();
 		StdDraw.setPenRadius(0.005);
 
-		for (oop_node_data d : search)   //outside loop is drawing each node
+		for (node_data d : search)   //outside loop is drawing each node
 		{
 			StdDraw.setPenColor(Color.BLUE);
 			StdDraw.setPenRadius(0.015);
@@ -143,12 +143,12 @@ public class graph_gui extends JFrame implements ActionListener, MouseListener
 			StdDraw.point(x, y);
 			StdDraw.text(x,y+4,""+k);
 
-			for(oop_edge_data e :  gr.getE(k)) //inner loop is drawing each node's edges
+			for(edge_data e :  gr.getE(k)) //inner loop is drawing each node's edges
 			{
 				StdDraw.setPenColor(Color.RED);
 				StdDraw.setPenRadius(0.004);
 				int dest = e.getDest();
-				oop_node_data n = gr.getNode(dest);
+				node_data n = gr.getNode(dest);
 				double x1 = n.getLocation().x();
 				double y1 = n.getLocation().y();
 				StdDraw.line(x, y, x1, y1);
