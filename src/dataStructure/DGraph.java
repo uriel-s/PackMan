@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import java.util.Collection;
 import java.io.FileNotFoundException;
@@ -45,18 +46,9 @@ public class DGraph implements graph ,Serializable{
 		return ans;
 
 	}
-	public DGraph init(String json_file) {
-		Gson gson = new Gson();
-		try 
-		{
-			DGraph gp = gson.fromJson(json_file,DGraph.class);
-			return gp;
-		} 
-		catch (Exception e) {
-			System.out.println("json read failed");		
-			return this;
-		}
-
+	public void init(String json_file) {
+		
+		
 	}
 
 	//function that (deep) copy the vertexes in a graph/()
