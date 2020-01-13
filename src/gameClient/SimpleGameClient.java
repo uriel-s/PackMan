@@ -15,6 +15,7 @@ import dataStructure.graph;
 import oop_dataStructure.OOP_DGraph;
 import oop_dataStructure.oop_edge_data;
 import oop_dataStructure.oop_graph;
+import utils.StdDraw;
 /**
  * This class represents a simple example for using the GameServer API:
  * the main file performs the following tasks:
@@ -113,14 +114,7 @@ public class SimpleGameClient {
 	 */
 	private static int nextNode(graph g, int src) {
 		int ans = -1;
-		Collection<edge_data> ee = g.getE(src);
-		Iterator<edge_data> itr = ee.iterator();
-		int s = ee.size();
-		int r = (int)(Math.random()*s);
-		int i=0;
-		while(i<r) {itr.next();i++;}
-		ans = itr.next().getDest();
-		return ans;
+		if(StdDraw)
 	}
 
 }

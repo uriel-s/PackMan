@@ -44,7 +44,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
- import javax.swing.JPanel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 
@@ -57,15 +57,22 @@ import utils.*;
 public class MyGameGUI
 
 {
-	DGraph gr;
-    
-	public MyGameGUI()
+	static DGraph gr;
+	game_service game;
+
+
+	public MyGameGUI() throws JSONException
 	{
-		this.gr=new DGraph();
-		choose_level();
+		MyGameGUI.gr=new DGraph();
+		String g = choose_level();
+		gr.init(g);
+		set_scale(game);
+		paint();
+		PaintFruits();
+		PaintRobots();
 	}
 
-	private void set_scale(game_service game) {
+	private void set_scale(game_service game) throws JSONException {
 
 		StdDraw.setCanvasSize(1000,600);
 
@@ -89,11 +96,9 @@ public class MyGameGUI
 
 		StdDraw.setXscale(min_x-0.002,max_x+0.002);
 		StdDraw.setYscale(min_y-0.002,max_y+0.002);
-		paint();
-		PaintFruits(game);
-		PaintRobots(game);
+
 	}
-	
+
 	//open the stddraw window and draw the graph
 	public void paint() {
 
@@ -147,32 +152,25 @@ public class MyGameGUI
 			}
 		}
 	}
-	
-	public void choose_level() {
+
+	public String choose_level() {
 		JSONObject line;
 		try {
 			JFrame in = new JFrame();
 			String level = JOptionPane.showInputDialog(in,"choose a level [0-23]:");
 			int scenario_num =Integer.parseInt(level); 
-			game_service game = Game_Server.getServer(scenario_num);
-			String g = game.getGraph();
-			gr.init(g);
-			line = new JSONObject(game.toString());
-			JSONObject ttt = line.getJSONObject("GameServer");
-			int rs = ttt.getInt("robots");
-			for(int i=0;i<rs;i++) {
-				game.addRobot(i);
-			}
-			set_scale(game);
-
+			this.game = Game_Server.getServer(scenario_num);
+			String g = this.game.getGraph();
+			return g;
 		}
 		catch (Exception e) {
 			e.printStackTrace();	
 		}
+		return null;
 	}
 
 
-	private void PaintFruits(game_service game) 
+	private void PaintFruits() 
 	{
 
 		JSONObject line;
@@ -206,8 +204,15 @@ public class MyGameGUI
 			e.printStackTrace();	
 		}
 	}
-	private void PaintRobots(game_service game) {
+	private void PaintRobots() throws JSONException {
 		JSONObject line;
+
+		line = new JSONObject(game.toString());
+		JSONObject t = line.getJSONObject("GameServer");
+		int rs = t.getInt("robots");
+		for(int i=0;i<rs;i++) {
+			game.addRobot(i);
+		}
 		try {
 			Iterator<String> r_iter = game.getRobots().iterator();
 			while(r_iter.hasNext())
@@ -245,13 +250,72 @@ public class MyGameGUI
 		return p;
 	}
 
-	public void nextNode() {
-		if(StdDraw.isMousePressed()) {
-			
+	//	public void nextNode() {
+	//		if(StdDraw.isMousePressed()) {	
+	//		}
+	//	}
 
-			
-			
+	public void startGameGUI() throws JSONException{
+		game.startGame();
+		while(game.isRunning()) {
+			StdDraw.enableDoubleBuffering();
+			StdDraw.clear();;
+			moveRobots(game, gr);
+			paint();
+			PaintFruits();
+			PaintRobots();
+			StdDraw.show();
 		}
 	}
-	
+	private static void moveRobots(game_service game, graph gg) {
+		List<String> log = game.move();
+		if(log!=null) {
+			long t = game.timeToEnd();
+			for(int i=0;i<log.size();i++) {
+				String robot_json = log.get(i);
+				try {
+					JSONObject line = new JSONObject(robot_json);
+					JSONObject ttt = line.getJSONObject("Robot");
+					int rid = ttt.getInt("id");
+					int src = ttt.getInt("src");
+					int dest = ttt.getInt("dest");
+
+					if(dest==-1) {
+						dest = nextNode(gg, src);
+						game.chooseNextEdge(rid, dest);
+						System.out.println("Turn to node: "+dest+"  time to end:"+(t/1000));
+						System.out.println(ttt);
+					}
+				}
+				catch (JSONException e) {e.printStackTrace();}
+			}
+		}
+	}
+	/**
+	 * a very simple random walk implementation!
+	 * @param g
+	 * @param src
+	 * @return
+	 */
+	private static int nextNode(graph g, int src) {
+		
+		if(StdDraw.isMousePressed()) {
+			double x = StdDraw.mouseX();
+			double y = StdDraw.mouseY();
+			Collection<node_data> search = gr.getV();
+			for(node_data d : search ) {
+				Point3D p = d.getLocation();
+				double _x =p.x();
+				double _y =p.y();
+				double distanceX = Math.abs(x-_x);
+				double distanceY = Math.abs(y-_y);
+				if(distanceX<0.0001 && distanceY<0.0001) {
+					return d.getKey();
+				}
+			}
+
+		}
+		return -1;
+	}
+
 }
