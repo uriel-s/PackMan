@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.gson.Gson;
@@ -106,8 +107,6 @@ public class DGraph implements graph ,Serializable{
 				int dest = Edges.getJSONObject(i).getInt("dest");
 				int w = Edges.getJSONObject(i).getInt("w");
 
-				//String loction = Nodes.getJSONObject(i).getString("pos");
-				//Point3D p= getloc(loction);
 				d.setSrc(src);
 				d.setDest(dest);
 				d.setWeight(w);
@@ -115,6 +114,8 @@ public class DGraph implements graph ,Serializable{
 				n.AddEdge(d);
 			}
 		}
+		catch (JSONException e) {e.printStackTrace();}			
+		
 	}
 
 	public Point3D getloc (String s)
