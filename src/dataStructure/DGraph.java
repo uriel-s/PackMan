@@ -3,7 +3,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import com.google.gson.Gson;
+import com.sun.javafx.scene.paint.GradientUtils.Point;
+
+import utils.Point3D;
 
 import java.util.Collection;
 import java.io.FileNotFoundException;
@@ -45,19 +51,82 @@ public class DGraph implements graph ,Serializable{
 		return ans;
 
 	}
-	public DGraph init(String json_file) {
-		Gson gson = new Gson();
-		try 
-		{
-			DGraph gp = gson.fromJson(json_file,DGraph.class);
-			return gp;
-		} 
-		catch (Exception e) {
-			System.out.println("json read failed");		
-			return this;
-		}
 
+	//	private void initToJson(String g) {
+	//        try {
+	//            JSONObject line = new JSONObject(g);
+	//            JSONArray nodesArr = line.getJSONArray("Nodes");
+	//            for(int i = 0; i < nodesArr.length(); i++) {
+	//                String pos = nodesArr.getJSONObject(i).getString("pos");
+	//                String[] locations = pos.split(",");
+	//                double x = Double.parseDouble(locations[0]);
+	//                double y = Double.parseDouble(locations[1]);
+	//                double z = Double.parseDouble(locations[2]);
+	//                Point3D p = new Point3D(x,y,z);
+	//                int key = nodesArr.getJSONObject(i).getInt("id");
+	//                addNode(new Node(key, p));
+	//            }
+	//            JSONArray edgeArr = line.getJSONArray("Edges");
+	//            for(int i = 0; i < edgeArr.length(); i++) {
+	//                int src = edgeArr.getJSONObject(i).getInt("src");
+	//                double w = edgeArr.getJSONObject(i).getDouble("w");
+	//                int dest = edgeArr.getJSONObject(i).getInt("dest");
+	//                connect(src, dest, w);
+	//            }
+	//        } catch (JSONException e) {
+	//            e.printStackTrace();
+	//        }
+	//    }
+
+
+	public void init(String json_file) {
+		JSONObject line;
+		try {
+			line = new JSONObject(json_file);
+			JSONArray Nodes = line.getJSONArray("Nodes");
+			JSONArray Edges = line.getJSONArray("Edges");
+
+			
+			for(int i =0; i< Nodes.length();i++)
+			{
+				DNode n=	new DNode();			
+				
+				int id = Nodes.getJSONObject(i).getInt("id");
+				String loction = Nodes.getJSONObject(i).getString("pos");
+				Point3D p= getloc(loction);
+				n.SetKey(id);
+				n.setLocation(p);
+				this.addNode(n);
+			}
+			for(int i =0; i< Edges.length();i++)
+			{
+				Dedge d  =	new Dedge();			
+				
+				int src = Edges.getJSONObject(i).getInt("src");
+				int dest = Edges.getJSONObject(i).getInt("dest");
+				int w = Edges.getJSONObject(i).getInt("w");
+
+				//String loction = Nodes.getJSONObject(i).getString("pos");
+				//Point3D p= getloc(loction);
+				d.setSrc(src);
+				d.setDest(dest);
+				d.setWeight(w);
+				DNode n = (DNode) this.getNode(src);
+				n.AddEdge(d);
+			}
+		}
 	}
+
+	public Point3D getloc (String s)
+	{
+		String[] locations = s.split(",");
+		double x = Double.parseDouble(locations[0]);
+		double y = Double.parseDouble(locations[1]);
+		double z = Double.parseDouble(locations[2]);
+		Point3D p = new Point3D(x,y,z);	
+		return p;
+	}
+
 
 	//function that (deep) copy the vertexes in a graph/()
 	public HashMap<Integer, node_data> DeepCopyVertex(HashMap<Integer, node_data> vertex)
