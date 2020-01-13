@@ -43,8 +43,8 @@ public class SimpleGameClient {
 		String g = game.getGraph();
 		DGraph gg = new DGraph();
 		gg.init(g);
-		MyGameGUI grp = new MyGameGUI(gg);
-		grp.setVisible(true);
+//		MyGameGUI grp = new MyGameGUI(gg);
+//		grp.setVisible(true);
 		String info = game.toString();
 		JSONObject line;
 		try {
@@ -56,6 +56,10 @@ public class SimpleGameClient {
 			// the list of fruits should be considered in your solution
 			Iterator<String> f_iter = game.getFruits().iterator();
 			while(f_iter.hasNext()) {System.out.println(f_iter.next());}
+			
+			Iterator<String> riter = game.getRobots().iterator();
+			while(riter.hasNext()) {System.out.println(riter.next());} 
+			
 			int src_node = 0;  // arbitrary node, you should start at one of the fruits
 			for(int a = 0;a<rs;a++) {
 				game.addRobot(src_node+a);
@@ -66,6 +70,7 @@ public class SimpleGameClient {
 		// should be a Thread!!!
 		while(game.isRunning()) {
 			moveRobots(game, gg);
+			
 		}
 		String results = game.toString();
 		System.out.println("Game Over: "+results);
