@@ -29,6 +29,7 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -49,86 +50,58 @@ import javax.swing.JTextField;
 
 import algorithms.*;
 import dataStructure.*;
-import oop_dataStructure.OOP_DGraph;
-import oop_dataStructure.oop_edge_data;
-import oop_dataStructure.oop_graph;
-import oop_dataStructure.oop_node_data;
 import utils.*;
 
 
 
-public class MyGameGUI extends JFrame implements ActionListener, MouseListener
+public class MyGameGUI
 
 {
-	DGraph gr;
+	static DGraph gr;
+	game_service game;
 
-	public MyGameGUI(DGraph g)
+
+	public MyGameGUI() throws JSONException
 	{
-		this.gr=g;
-		initGUI(gr);
+		MyGameGUI.gr=new DGraph();
+		String g = choose_level();
+		gr.init(g);
+		set_scale(game);
+		paint();
+		PaintFruits();
+		PaintRobots();
 	}
-	public MyGameGUI(String g)
-	{
-		this.gr.init(g);
-		initGUI(gr);
-	}
-	/*
-	 * initiate a gui window using JFrame which shows a menu of choices do display and draw them
-	 * using the algorithms of the project   
-	 */
-	private void initGUI(DGraph gr) 
-	{
-		this.setSize(500, 500);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		MenuBar menuBar = new MenuBar();
-		Menu menu1 = new Menu("Menu");
-		Menu menu2 = new Menu("file");
 
-		menuBar.add(menu1);
-		menuBar.add(menu2);
+	private void set_scale(game_service game) throws JSONException {
 
-		this.setMenuBar(menuBar);
-		MenuItem item0 = new MenuItem("draw graph");
-		item0.addActionListener(this);
-        
-		MenuItem item1 = new MenuItem("shortest Path way");
-		item1.addActionListener(this);
+		StdDraw.setCanvasSize(1000,600);
 
-		MenuItem item3 = new MenuItem("tsp");
-		item3.addActionListener(this);
+		double max_x = Double.MIN_VALUE;
+		double max_y = Double.MIN_VALUE;
+		double min_x = Double.MAX_VALUE;
+		double min_y = Double.MAX_VALUE;
 
-		MenuItem item4 = new MenuItem("isConnected");
-		item4.addActionListener(this);
-
-		MenuItem item5 = new MenuItem("save to file");
-		item5.addActionListener(this);
-
-		MenuItem item6 = new MenuItem("draw from file");
-		item6.addActionListener(this);
-
-		MenuItem item7 = new MenuItem("choose level");
-		item7.addActionListener(this);
-
-		menu1.add(item0);
-		menu1.add(item1);
-		menu1.add(item3);
-		menu1.add(item4);
-		menu1.add(item7);
-
-		menu2.add(item5);
-		menu2.add(item6);
+		gr.init(game.getGraph());
 
 
+		Collection<node_data> d =gr.getV();
+		for(node_data node : d) {
+			max_x = Math.max(max_x, node.getLocation().x());
+			max_y = Math.max(max_y, node.getLocation().y());
+			min_x = Math.min(min_x, node.getLocation().x());
+			min_y = Math.min(min_y, node.getLocation().y());
 
-		this.addMouseListener(this);
+		}
+
+
+		StdDraw.setXscale(min_x-0.002,max_x+0.002);
+		StdDraw.setYscale(min_y-0.002,max_y+0.002);
 
 	}
-    //open the stddraw window and draw the graph
+
+	//open the stddraw window and draw the graph
 	public void paint() {
 
-		StdDraw.setCanvasSize(1000, 500);
-		StdDraw.setXscale(35,36);
-		StdDraw.setYscale(32,33);
 		Collection<node_data> search = gr.getV();
 		StdDraw.setPenRadius(0.005);
 
@@ -141,43 +114,22 @@ public class MyGameGUI extends JFrame implements ActionListener, MouseListener
 			double x = d.getLocation().x();
 			double y = d.getLocation().y();
 			StdDraw.point(x, y);
-			StdDraw.text(x,y+4,""+k);
+			StdDraw.text(x,y+0.0002,""+k);
 
 			for(edge_data e :  gr.getE(k)) //inner loop is drawing each node's edges
 			{
-				StdDraw.setPenColor(Color.RED);
+				StdDraw.setPenColor(Color.darkGray);
 				StdDraw.setPenRadius(0.004);
 				int dest = e.getDest();
 				node_data n = gr.getNode(dest);
 				double x1 = n.getLocation().x();
 				double y1 = n.getLocation().y();
 				StdDraw.line(x, y, x1, y1);
-				StdDraw.setPenColor(Color.BLACK);
-				/*
-				 * draw the weight on 40% way of the edge
-				 */
-				double c=0,s=0;
-				if(x<x1 && y<y1) {
-					c=x+(Math.abs(x-x1)*0.4);
-					s=y+(Math.abs(y-y1)*0.4);
-				}
-				if(x>x1 && y>y1 ) {
-					c=x-(Math.abs(x-x1)*0.4);
-					s=y-(Math.abs(y-y1)*0.4);
-				}
-				if(x>x1 && y<y1 ) {
-					c=x-(Math.abs(x-x1)*0.4);
-					s=y+(Math.abs(y-y1)*0.4);
-				}
-				if(x<x1 && y>y1) {
-					c=x+(Math.abs(x-x1)*0.4);
-					s=y-(Math.abs(y-y1)*0.4);
-				}
-				StdDraw.text(c,s,""+ e.getWeight());
+
 				/*
 				 * draw yellow point on 80% way of the edge
 				 */
-				StdDraw.setPenColor(Color.YELLOW);
+				StdDraw.setPenColor(Color.GREEN);
 				double a=0,b=0;
 				if(x<x1 && y<y1) {
 					a=x+(Math.abs(x-x1)*0.8);
@@ -200,210 +152,170 @@ public class MyGameGUI extends JFrame implements ActionListener, MouseListener
 			}
 		}
 	}
-	@Override
-	//choose witch function to apply according to the action performed from the menu 
-	public void actionPerformed(ActionEvent e) 
-	{
-		String str = e.getActionCommand();
-		if(str.equals("draw graph"))
-		{
-			paint();
-		}
-		if(str.equals("choose level"))
-		{
-			choose_level();
-		}
-		if(str.equals("shortest Path way"))
-		{
-			shortest_Path();
-		}
-		if(str.equals("tsp")) {
-			tsp();
-		}
-		if(str.equals("isConnected")) {
-			isConnected();
-		}
-		if(str.equals("save to file")) {
-			saveToFile();
-		}
-		if(str.equals("draw from file")) {
-			drawfromfile();
-		}
 
-	}
-  private void choose_level() {
-	  try {
+	public String choose_level() {
+		JSONObject line;
+		try {
 			JFrame in = new JFrame();
 			String level = JOptionPane.showInputDialog(in,"choose a level [0-23]:");
 			int scenario_num =Integer.parseInt(level); 
-			game_service game = Game_Server.getServer(scenario_num); 
-			String g = game.getGraph();
-			
-	  }
-	  
-	  catch (Exception e) {
-			e.printStackTrace();
-		}
-  }
-
-
-	private void tsp() {
-		try {
-			List<Integer> targets = new ArrayList<Integer>();
-			JFrame in = new JFrame();
-			String str = "-1";
-			String travel ="";
-			while(!(travel.equals(str))){
-				travel = JOptionPane.showInputDialog(in,"Enter targets Node,enter -1 when you finish:");
-				int s = Integer.parseInt(travel);
-				targets.add(s);
-			}
-			targets.remove(targets.size()-1);
-			Graph_Algo newTsp = new Graph_Algo();
-			newTsp.init(gr);
-			paint();
-			List<node_data> dis = newTsp.TSP(targets);
-//			for(node_data x : dis) {
-//				System.out.print(x.getKey()+"\t");
-//			}
-			paint();
-			for (int i=0; i<dis.size()-1; i++) {
-				double x1 = dis.get(i).getLocation().x();
-				double y1 = dis.get(i).getLocation().y();
-				double x2 = dis.get(i+1).getLocation().x();
-				double y2 = dis.get(i+1).getLocation().y();
-
-				StdDraw.setPenColor(Color.GREEN);
-				StdDraw.setPenRadius(0.004);	
-				StdDraw.line(x1, y1, x2, y2);
-			}
-
+			this.game = Game_Server.getServer(scenario_num);
+			String g = this.game.getGraph();
+			return g;
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			e.printStackTrace();	
 		}
-
-	}
-   /*
-    * draw the graph and show on the bottom of the screen if is connected or not
-    */
-
-	private void isConnected() {
-		paint();
-		StdDraw.setPenColor();
-		StdDraw.setFont();
-
-
-		Graph_Algo graphIsC = new Graph_Algo();
-		graphIsC.init(gr);
-		if(graphIsC.isConnected()) {
-			StdDraw.text(0,-95,"the graph is connected" );
-
-		} else {
-
-			StdDraw.text(0,-95,"the graph is NOT connected");
-
-
-		}
-	}
-
-	private void saveToFile() {
-		Graph_Algo t=new Graph_Algo();
-		t.setG(this.gr);
-		JFileChooser j;
-		FileNameExtensionFilter filter;
-
-		j = new JFileChooser(FileSystemView.getFileSystemView());
-		j.setDialogTitle("Save graph to file"); 
-		filter = new FileNameExtensionFilter(" .txt","txt");
-		j.setFileFilter(filter);
-
-		int userSelection = j.showSaveDialog(null);
-		if (userSelection == JFileChooser.APPROVE_OPTION) {
-			System.out.println("Save as file: " + j.getSelectedFile().getAbsolutePath());
-			t.save(j.getSelectedFile().getName());
-
-		}
-	}
-
-	private void drawfromfile() {
-		this.gr = null;
-		JFileChooser jf = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-		int returnV = jf.showOpenDialog(null);
-		Graph_Algo gra = new Graph_Algo();
-		if (returnV == JFileChooser.APPROVE_OPTION) {
-			File selected = jf.getSelectedFile();
-			gra.init(selected.getName());
-		}
-		this.gr = gra.getG();
-		paint();
+		return null;
 	}
 
 
-	public void shortest_Path() {
+	private void PaintFruits() 
+	{
+
+		JSONObject line;
 		try {
-			JFrame in = new JFrame();
-			String Source = JOptionPane.showInputDialog(in,"Enter Source-Node:");
-			String Dest = JOptionPane.showInputDialog(in,"Enter Destination-Node:");
+			Iterator<String> f_iter = game.getFruits().iterator();
+			while(f_iter.hasNext())
+			{
+				line = new JSONObject(f_iter.next());
+				JSONObject ttt = line.getJSONObject("Fruit");
 
-			int src = Integer.parseInt(Source);
-			int dest = Integer.parseInt(Dest);
+				double value = ttt.getDouble("value");
+				int type = ttt.getInt("type");
+				String pos = ttt.getString("pos");
+				Point3D p= getloc(pos);
+				Fruit f = new Fruit(type,value,p);
+				if(f.getType()==-1) {
+					StdDraw.setPenColor(Color.YELLOW);
+					StdDraw.setPenRadius(0.03);
+					StdDraw.point(f.getPos().x(), f.getPos().y());
 
-			Graph_Algo G = new Graph_Algo();
-			G.init(gr);
+				}
+				if(f.getType()==1) {
+					StdDraw.setPenColor(Color.RED);
+					StdDraw.setPenRadius(0.03);
+					StdDraw.point(f.getPos().x(), f.getPos().y());
+				}
 
-			List<node_data> dis = G.shortestPath(src, dest);
-			double distance = G.shortestPathDist(src, dest);
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();	
+		}
+	}
+	private void PaintRobots() throws JSONException {
+		JSONObject line;
+
+		line = new JSONObject(game.toString());
+		JSONObject t = line.getJSONObject("GameServer");
+		int rs = t.getInt("robots");
+		for(int i=0;i<rs;i++) {
+			game.addRobot(i);
+		}
+		try {
+			Iterator<String> r_iter = game.getRobots().iterator();
+			while(r_iter.hasNext())
+			{
+				line = new JSONObject(r_iter.next());
+				JSONObject ttt = line.getJSONObject("Robot");
+
+				double value = ttt.getDouble("value");
+				int src = ttt.getInt("src");
+				int dest = ttt.getInt("dest");
+				int speed = ttt.getInt("speed");
+				int id = ttt.getInt("id");
+				String pos = ttt.getString("pos");
+				Point3D p= getloc(pos);
+				robot f = new robot( id,  speed,  src,  dest, p, value);
+				StdDraw.setPenColor(Color.black);
+				StdDraw.setPenRadius(0.03);
+				StdDraw.point(f.getPos().x(), f.getPos().y());
+			}
+		}
+
+		catch (Exception e) {
+			e.printStackTrace();	
+		}
+
+	}
+
+	public Point3D getloc (String s)
+	{
+		String[] locations = s.split(",");
+		double x = Double.parseDouble(locations[0]);
+		double y = Double.parseDouble(locations[1]);
+		double z = Double.parseDouble(locations[2]);
+		Point3D p = new Point3D(x,y,z);
+		return p;
+	}
+
+	//	public void nextNode() {
+	//		if(StdDraw.isMousePressed()) {	
+	//		}
+	//	}
+
+	public void startGameGUI() throws JSONException{
+		game.startGame();
+		while(game.isRunning()) {
+			StdDraw.enableDoubleBuffering();
+			StdDraw.clear();;
+			moveRobots(game, gr);
 			paint();
-			StdDraw.setPenColor();
-			StdDraw.text(0, -95, "the shortest distance between "+src+" --> "+dest+" is :"+distance);
-			for (int i=0; i<dis.size()-1; i++) {
-				double x1 = dis.get(i).getLocation().x();
-				double y1 = dis.get(i).getLocation().y();
-				double x2 = dis.get(i+1).getLocation().x();
-				double y2 = dis.get(i+1).getLocation().y();
+			PaintFruits();
+			PaintRobots();
+			StdDraw.show();
+		}
+	}
+	private static void moveRobots(game_service game, graph gg) {
+		List<String> log = game.move();
+		if(log!=null) {
+			long t = game.timeToEnd();
+			for(int i=0;i<log.size();i++) {
+				String robot_json = log.get(i);
+				try {
+					JSONObject line = new JSONObject(robot_json);
+					JSONObject ttt = line.getJSONObject("Robot");
+					int rid = ttt.getInt("id");
+					int src = ttt.getInt("src");
+					int dest = ttt.getInt("dest");
 
-				StdDraw.setPenColor(Color.GREEN);
-				StdDraw.setPenRadius(0.004);	
-				StdDraw.line(x1, y1, x2, y2);
+					if(dest==-1) {
+						dest = nextNode(gg, src);
+						game.chooseNextEdge(rid, dest);
+						System.out.println("Turn to node: "+dest+"  time to end:"+(t/1000));
+						System.out.println(ttt);
+					}
+				}
+				catch (JSONException e) {e.printStackTrace();}
+			}
+		}
+	}
+	/**
+	 * a very simple random walk implementation!
+	 * @param g
+	 * @param src
+	 * @return
+	 */
+	private static int nextNode(graph g, int src) {
+		
+		if(StdDraw.isMousePressed()) {
+			double x = StdDraw.mouseX();
+			double y = StdDraw.mouseY();
+			Collection<node_data> search = gr.getV();
+			for(node_data d : search ) {
+				Point3D p = d.getLocation();
+				double _x =p.x();
+				double _y =p.y();
+				double distanceX = Math.abs(x-_x);
+				double distanceY = Math.abs(y-_y);
+				if(distanceX<0.0001 && distanceY<0.0001) {
+					return d.getKey();
+				}
 			}
 
 		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-
+		return -1;
 	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		//System.out.println("mouseClicked");
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		//System.out.println("mousePressed");
-
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		//System.out.println("mouseReleased");
-
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		//System.out.println("mouseEntered");
-
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		//System.out.println("mouseExited");
-	}
-	
-
-
 
 }

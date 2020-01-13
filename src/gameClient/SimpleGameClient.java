@@ -15,6 +15,7 @@ import dataStructure.graph;
 import oop_dataStructure.OOP_DGraph;
 import oop_dataStructure.oop_edge_data;
 import oop_dataStructure.oop_graph;
+import utils.StdDraw;
 /**
  * This class represents a simple example for using the GameServer API:
  * the main file performs the following tasks:
@@ -42,8 +43,8 @@ public class SimpleGameClient {
 		String g = game.getGraph();
 		DGraph gg = new DGraph();
 		gg.init(g);
-		MyGameGUI grp = new MyGameGUI(gg);
-		grp.setVisible(true);
+//		MyGameGUI grp = new MyGameGUI(gg);
+//		grp.setVisible(true);
 		String info = game.toString();
 		JSONObject line;
 		try {
@@ -55,6 +56,10 @@ public class SimpleGameClient {
 			// the list of fruits should be considered in your solution
 			Iterator<String> f_iter = game.getFruits().iterator();
 			while(f_iter.hasNext()) {System.out.println(f_iter.next());}
+			
+			Iterator<String> riter = game.getRobots().iterator();
+			while(riter.hasNext()) {System.out.println(riter.next());} 
+			
 			int src_node = 0;  // arbitrary node, you should start at one of the fruits
 			for(int a = 0;a<rs;a++) {
 				game.addRobot(src_node+a);
@@ -65,6 +70,7 @@ public class SimpleGameClient {
 		// should be a Thread!!!
 		while(game.isRunning()) {
 			moveRobots(game, gg);
+			
 		}
 		String results = game.toString();
 		System.out.println("Game Over: "+results);
@@ -108,14 +114,7 @@ public class SimpleGameClient {
 	 */
 	private static int nextNode(graph g, int src) {
 		int ans = -1;
-		Collection<edge_data> ee = g.getE(src);
-		Iterator<edge_data> itr = ee.iterator();
-		int s = ee.size();
-		int r = (int)(Math.random()*s);
-		int i=0;
-		while(i<r) {itr.next();i++;}
-		ans = itr.next().getDest();
-		return ans;
+		if(StdDraw)
 	}
 
 }

@@ -81,7 +81,7 @@ public class DGraph implements graph ,Serializable{
 
 				int src = Edges.getJSONObject(i).getInt("src");
 				int dest = Edges.getJSONObject(i).getInt("dest");
-				int w = Edges.getJSONObject(i).getInt("w");
+				double w = Edges.getJSONObject(i).getDouble("w");
 
 				d.setSrc(src);
 				d.setDest(dest);
