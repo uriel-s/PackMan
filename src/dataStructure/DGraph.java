@@ -48,7 +48,7 @@ public class DGraph implements graph ,Serializable{
 	}
 	public void init(String json_file) {
 		
-		
+		//fgdfhdrh
 	}
 
 	//function that (deep) copy the vertexes in a graph/()
