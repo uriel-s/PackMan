@@ -11,6 +11,8 @@ import org.json.JSONObject;
 import Server.Game_Server;
 import Server.game_service;
 import dataStructure.DGraph;
+import dataStructure.edge_data;
+import dataStructure.graph;
 import oop_dataStructure.OOP_DGraph;
 import oop_dataStructure.oop_edge_data;
 import oop_dataStructure.oop_graph;
@@ -41,13 +43,13 @@ public class SimpleGameClient {
 		String g = game.getGraph();
 		DGraph gg = new DGraph();
 		gg.init(g);
-		graph_gui grp = new graph_gui(gg);
+		MyGameGUI grp = new MyGameGUI(gg);
 		grp.setVisible(true);
 		String info = game.toString();
 		JSONObject line;
 		try {
 			line = new JSONObject(info);
-			JSONArray ttt = line.getJSONArray("Edges");
+			JSONObject ttt = line.getJSONObject("GameServer");
 			int rs = ttt.getInt("robots");
 			System.out.println(info);
 			System.out.println(g);
@@ -75,7 +77,7 @@ public class SimpleGameClient {
 	 * @param gg
 	 * @param log
 	 */
-	private static void moveRobots(game_service game, oop_graph gg) {
+	private static void moveRobots(game_service game, graph gg) {
 		List<String> log = game.move();
 		if(log!=null) {
 			long t = game.timeToEnd();
@@ -105,10 +107,10 @@ public class SimpleGameClient {
 	 * @param src
 	 * @return
 	 */
-	private static int nextNode(oop_graph g, int src) {
+	private static int nextNode(graph g, int src) {
 		int ans = -1;
-		Collection<oop_edge_data> ee = g.getE(src);
-		Iterator<oop_edge_data> itr = ee.iterator();
+		Collection<edge_data> ee = g.getE(src);
+		Iterator<edge_data> itr = ee.iterator();
 		int s = ee.size();
 		int r = (int)(Math.random()*s);
 		int i=0;

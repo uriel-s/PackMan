@@ -74,7 +74,7 @@ public class sdf {
 	    DGraph DGrahp1 = new DGraph();
 //		game_service game = Game_Server.getServer(scenario_num); // you have [0,23] games
         
-		graph_gui g = new graph_gui(DGrahp1);
+	    MyGameGUI g = new MyGameGUI(DGrahp1);
 		g.setVisible(true);
 
 	}
