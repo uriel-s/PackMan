@@ -28,7 +28,7 @@ import oop_dataStructure.oop_graph;
  * 8. move the robot along the current edge (line 74)
  * 9. direct to the next edge (if on a node) (line 87-88)
  * 10. prints the game results (after "game over"): (line 63)
- *  
+ *
  * @author boaz.benmoshe
  *
  */
@@ -36,16 +36,16 @@ public class SimpleGameClient {
 	public static void main(String[] a) {
 		test1();}
 	public static void test1() {
-		
+
 		int scenario_num = 2;
 		game_service game = Game_Server.getServer(scenario_num); // you have [0,23] games
 		String g = game.getGraph();
 		DGraph gg = new DGraph();
 		gg.init(g);
-		graph_gui grp = new graph_gui(gg);
+		MyGameGUI grp = new MyGameGUI(gg);
 		grp.setVisible(true);
 		String info = game.toString();
-		JSONObject line; 
+		JSONObject line;
 		try {
 			line = new JSONObject(info);
 			JSONObject ttt = line.getJSONObject("GameServer");
@@ -54,7 +54,7 @@ public class SimpleGameClient {
 			System.out.println(g);
 			// the list of fruits should be considered in your solution
 			Iterator<String> f_iter = game.getFruits().iterator();
-			while(f_iter.hasNext()) {System.out.println(f_iter.next());}	
+			while(f_iter.hasNext()) {System.out.println(f_iter.next());}
 			int src_node = 0;  // arbitrary node, you should start at one of the fruits
 			for(int a = 0;a<rs;a++) {
 				game.addRobot(src_node+a);
@@ -69,14 +69,14 @@ public class SimpleGameClient {
 		String results = game.toString();
 		System.out.println("Game Over: "+results);
 	}
-	/** 
-	 * Moves each of the robots along the edge, 
+	/**
+	 * Moves each of the robots along the edge,
 	 * in case the robot is on a node the next destination (next edge) is chosen (randomly).
 	 * @param game
 	 * @param gg
 	 * @param log
 	 */
-	private static void moveRobots(game_service game, DGraph gg) {
+	private static void moveRobots(game_service game, graph gg) {
 		List<String> log = game.move();
 		if(log!=null) {
 			long t = game.timeToEnd();
@@ -88,14 +88,14 @@ public class SimpleGameClient {
 					int rid = ttt.getInt("id");
 					int src = ttt.getInt("src");
 					int dest = ttt.getInt("dest");
-				
-					if(dest==-1) {	
+
+					if(dest==-1) {
 						dest = nextNode(gg, src);
 						game.chooseNextEdge(rid, dest);
 						System.out.println("Turn to node: "+dest+"  time to end:"+(t/1000));
 						System.out.println(ttt);
 					}
-				} 
+				}
 				catch (JSONException e) {e.printStackTrace();}
 			}
 		}
