@@ -33,6 +33,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.gson.JsonObject;
+
 import Server.Game_Server;
 import Server.game_service;
 
@@ -54,12 +56,12 @@ import utils.*;
 
 
 
-public class MyGameGUI
+public class MyGameGUI implements Runnable
 
 {
 	static DGraph gr;
 	game_service game;
-
+    double scaleParams [];
 
 	public MyGameGUI() throws JSONException
 	{
@@ -70,10 +72,30 @@ public class MyGameGUI
 		paint();
 		PaintFruits();
 		PaintRobots();
+		run();
 	}
 
-	private void set_scale(game_service game) throws JSONException {
+	
+	public int FindGrade() throws JSONException {
+		String info = game.toString();
+		JSONObject line;
+		try {
+			line = new JSONObject(info);
+			JSONObject ttt = line.getJSONObject("GameServer");
+			int grade = ttt.getInt("grade");
+			return grade ;
 
+		}
+		catch (JSONException e) {e.printStackTrace();}
+		return 0;
+	
+	
+
+	}
+	
+	
+	
+	private void set_scale(game_service game) throws JSONException {
 		StdDraw.setCanvasSize(1000,600);
 
 		double max_x = Double.MIN_VALUE;
@@ -92,8 +114,8 @@ public class MyGameGUI
 			min_y = Math.min(min_y, node.getLocation().y());
 
 		}
-
-
+		  double arr [] = {max_x,max_y,min_x,min_y};
+          this.scaleParams = arr;
 		StdDraw.setXscale(min_x-0.002,max_x+0.002);
 		StdDraw.setYscale(min_y-0.002,max_y+0.002);
 
@@ -172,7 +194,6 @@ public class MyGameGUI
 
 	private void PaintFruits() 
 	{
-
 		JSONObject line;
 		try {
 			Iterator<String> f_iter = game.getFruits().iterator();
@@ -204,22 +225,34 @@ public class MyGameGUI
 			e.printStackTrace();	
 		}
 	}
-	private void PaintRobots() throws JSONException {
+	private void locateRobots() throws JSONException {
 		JSONObject line;
-
 		line = new JSONObject(game.toString());
 		JSONObject t = line.getJSONObject("GameServer");
 		int rs = t.getInt("robots");
-		for(int i=0;i<rs;i++) {
-			game.addRobot(i);
+		System.out.println(rs);
+       for(int i = 0 ; i< rs ; i++) {
+	   try {
+			String locateRobot = JOptionPane.showInputDialog(null,"choose where to put your robot,you have "+(rs-i)+" robots left" );
+			int lr =Integer.parseInt(locateRobot); 
+			game.addRobot(lr);
+			}
+			catch (Exception e) {
+				e.printStackTrace();	
+			}
+	   
 		}
+       PaintRobots();
+	}
+	private void PaintRobots() throws JSONException {
+		JSONObject line;
+		line = new JSONObject(game.toString());
 		try {
 			Iterator<String> r_iter = game.getRobots().iterator();
 			while(r_iter.hasNext())
 			{
 				line = new JSONObject(r_iter.next());
 				JSONObject ttt = line.getJSONObject("Robot");
-
 				double value = ttt.getDouble("value");
 				int src = ttt.getInt("src");
 				int dest = ttt.getInt("dest");
@@ -230,7 +263,7 @@ public class MyGameGUI
 				robot f = new robot( id,  speed,  src,  dest, p, value);
 				StdDraw.setPenColor(Color.black);
 				StdDraw.setPenRadius(0.03);
-				StdDraw.point(f.getPos().x(), f.getPos().y());
+				StdDraw.picture(f.getPos().x(), f.getPos().y(),"ice.png",0.0005,0.0005);
 			}
 		}
 
@@ -249,24 +282,35 @@ public class MyGameGUI
 		Point3D p = new Point3D(x,y,z);
 		return p;
 	}
-
-	//	public void nextNode() {
-	//		if(StdDraw.isMousePressed()) {	
-	//		}
-	//	}
-
+	
 	public void startGameGUI() throws JSONException{
+		locateRobots();
 		game.startGame();
+		System.out.println("robot located");
 		while(game.isRunning()) {
 			StdDraw.enableDoubleBuffering();
-			StdDraw.clear();;
+			StdDraw.clear();
 			moveRobots(game, gr);
 			paint();
 			PaintFruits();
 			PaintRobots();
+			int grade=FindGrade();
+			long t = game.timeToEnd();
+			String TimeLeft = "Time to end : " + t;
+			String Score = "your score is : " + grade;
+
+			StdDraw.text((scaleParams[0]+scaleParams[2])/2,scaleParams[1]+0.001 , TimeLeft);
+			StdDraw.text((scaleParams[0]+scaleParams[2])/2,scaleParams[1]+0.0005 , Score);
 			StdDraw.show();
+		
 		}
+		
 	}
+	
+	
+	
+	
+	
 	private static void moveRobots(game_service game, graph gg) {
 		List<String> log = game.move();
 		if(log!=null) {
@@ -292,7 +336,7 @@ public class MyGameGUI
 		}
 	}
 	/**
-	 * a very simple random walk implementation!
+	 * let the user choose next node by clicking the mouse
 	 * @param g
 	 * @param src
 	 * @return
@@ -309,13 +353,23 @@ public class MyGameGUI
 				double _y =p.y();
 				double distanceX = Math.abs(x-_x);
 				double distanceY = Math.abs(y-_y);
-				if(distanceX<0.0001 && distanceY<0.0001) {
+				if(distanceX<0.0008 && distanceY<0.0008) {
 					return d.getKey();
 				}
 			}
 
 		}
 		return -1;
+	}
+
+
+	@Override
+	public void run() {
+      try {
+		startGameGUI();
+	} catch (JSONException e) {
+		e.printStackTrace();
+	}		
 	}
 
 }

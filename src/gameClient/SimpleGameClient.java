@@ -114,8 +114,16 @@ public class SimpleGameClient {
 	 */
 	private static int nextNode(graph g, int src) {
 		int ans = -1;
-		if(StdDraw)
+		Collection<edge_data> ee = g.getE(src);
+		Iterator<edge_data> itr = ee.iterator();
+		int s = ee.size();
+		int r = (int)(Math.random()*s);
+		int i=0;
+		while(i<r) {itr.next();i++;}
+		ans = itr.next().getDest();
+		return ans;
 	}
+
 
 }
 
