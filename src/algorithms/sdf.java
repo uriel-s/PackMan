@@ -20,7 +20,7 @@ public class sdf {
 
 	public static void main(String [] args) throws JSONException {
 
-	    MyGameGUI g = new MyGameGUI();
+	    AutoGame g = new AutoGame();
 	}
 	
 

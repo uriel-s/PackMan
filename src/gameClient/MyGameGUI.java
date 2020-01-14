@@ -61,7 +61,7 @@ public class MyGameGUI implements Runnable
 {
 	static DGraph gr;
 	game_service game;
-    double scaleParams [];
+	double scaleParams [];
 
 	public MyGameGUI() throws JSONException
 	{
@@ -75,7 +75,7 @@ public class MyGameGUI implements Runnable
 		run();
 	}
 
-	
+
 	public int FindGrade() throws JSONException {
 		String info = game.toString();
 		JSONObject line;
@@ -88,13 +88,13 @@ public class MyGameGUI implements Runnable
 		}
 		catch (JSONException e) {e.printStackTrace();}
 		return 0;
-	
-	
+
+
 
 	}
-	
-	
-	
+
+
+
 	private void set_scale(game_service game) throws JSONException {
 		StdDraw.setCanvasSize(1000,600);
 
@@ -114,8 +114,8 @@ public class MyGameGUI implements Runnable
 			min_y = Math.min(min_y, node.getLocation().y());
 
 		}
-		  double arr [] = {max_x,max_y,min_x,min_y};
-          this.scaleParams = arr;
+		double arr [] = {max_x,max_y,min_x,min_y};
+		this.scaleParams = arr;
 		StdDraw.setXscale(min_x-0.002,max_x+0.002);
 		StdDraw.setYscale(min_y-0.002,max_y+0.002);
 
@@ -231,18 +231,18 @@ public class MyGameGUI implements Runnable
 		JSONObject t = line.getJSONObject("GameServer");
 		int rs = t.getInt("robots");
 		System.out.println(rs);
-       for(int i = 0 ; i< rs ; i++) {
-	   try {
-			String locateRobot = JOptionPane.showInputDialog(null,"choose where to put your robot,you have "+(rs-i)+" robots left" );
-			int lr =Integer.parseInt(locateRobot); 
-			game.addRobot(lr);
+		for(int i = 0 ; i< rs ; i++) {
+			try {
+				String locateRobot = JOptionPane.showInputDialog(null,"choose where to put your robot,you have "+(rs-i)+" robots left" );
+				int lr =Integer.parseInt(locateRobot); 
+				game.addRobot(lr);
 			}
 			catch (Exception e) {
 				e.printStackTrace();	
 			}
-	   
+
 		}
-       PaintRobots();
+		PaintRobots();
 	}
 	private void PaintRobots() throws JSONException {
 		JSONObject line;
@@ -282,7 +282,7 @@ public class MyGameGUI implements Runnable
 		Point3D p = new Point3D(x,y,z);
 		return p;
 	}
-	
+
 	public void startGameGUI() throws JSONException{
 		locateRobots();
 		game.startGame();
@@ -302,15 +302,15 @@ public class MyGameGUI implements Runnable
 			StdDraw.text((scaleParams[0]+scaleParams[2])/2,scaleParams[1]+0.001 , TimeLeft);
 			StdDraw.text((scaleParams[0]+scaleParams[2])/2,scaleParams[1]+0.0005 , Score);
 			StdDraw.show();
-		
+
 		}
-		
+
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 	private static void moveRobots(game_service game, graph gg) {
 		List<String> log = game.move();
 		if(log!=null) {
@@ -342,7 +342,7 @@ public class MyGameGUI implements Runnable
 	 * @return
 	 */
 	private static int nextNode(graph g, int src) {
-		
+
 		if(StdDraw.isMousePressed()) {
 			double x = StdDraw.mouseX();
 			double y = StdDraw.mouseY();
@@ -361,15 +361,13 @@ public class MyGameGUI implements Runnable
 		}
 		return -1;
 	}
-
-
 	@Override
 	public void run() {
-      try {
-		startGameGUI();
-	} catch (JSONException e) {
-		e.printStackTrace();
-	}		
+		try {
+			startGameGUI();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}		
 	}
 
 }
