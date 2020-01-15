@@ -208,7 +208,6 @@ public class AutoGame implements Runnable
 				Point3D p= getloc(pos);
 				Fruit f = new Fruit(type,value,p);
 				fruitA.add(f);
-				
 				if(f.getType()==-1) {
 					StdDraw.setPenColor(Color.YELLOW);
 					StdDraw.setPenRadius(0.03);
@@ -228,22 +227,26 @@ public class AutoGame implements Runnable
 		}
 	}
 
+
+	private int findFruit() {
+		Collection<node_data> search = gr.getV();
+
 		for (node_data d : search) {
 			int k = d.getKey();
-		
+
 			for(edge_data e : gr.getE(k)) {
 				DNode src = (DNode) gr.getNode(e.getSrc());
 				DNode dst = (DNode) gr.getNode(e.getDest());
 				System.out.println("this is src  "+src);
 				System.out.println("this is dst  " +dst);
-                
-				
+
+
 				double SrcToDSt = src.getLocation().distance2D(dst.getLocation());
-				
+
 				for(Fruit fruit : fruitA) {
-                      
+
 					if(fruit.isUnderTarget() == false) {
-                          
+
 						double src2fruit = src.getLocation().distance2D(fruit.getPos());
 						double fruit2dest = fruit.getPos().distance2D(dst.getLocation());
 						double ans= src2fruit + fruit2dest;
@@ -264,15 +267,12 @@ public class AutoGame implements Runnable
 							return max;
 						}
 					}
-
-
 				}
 
 			}
-	}
+		}
 		return 0;
 	}
-
 
 	private void locateRobots() throws JSONException {
 		JSONObject line;
@@ -396,13 +396,13 @@ public class AutoGame implements Runnable
 	private static int nextNode(graph g, int src) {
 
 		int ans = -1;
-//		Collection<edge_data> ee = g.getE(src);
-//		Iterator<edge_data> itr = ee.iterator();
-//		int s = ee.size();
-//		int r = (int)(Math.random()*s);
-//		int i=0;
-//		while(i<r) {itr.next();i++;}
-//		ans = itr.next().getDest();
+		Collection<edge_data> ee = g.getE(src);
+		Iterator<edge_data> itr = ee.iterator();
+		int s = ee.size();
+		int r = (int)(Math.random()*s);
+		int i=0;
+		while(i<r) {itr.next();i++;}
+		ans = itr.next().getDest();
 		return ans;
 
 	}
