@@ -21,6 +21,7 @@ public class sdf {
 	public static void main(String [] args) throws JSONException {
 
 	    AutoGame g = new AutoGame();
+	    //MyGameGUI m = new MyGameGUI();
 	}
 	
 

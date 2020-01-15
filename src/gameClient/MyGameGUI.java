@@ -361,6 +361,7 @@ public class MyGameGUI implements Runnable
 		}
 		return -1;
 	}
+	
 	@Override
 	public void run() {
 		try {
