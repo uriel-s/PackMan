@@ -254,12 +254,22 @@ public class AutoGame implements Runnable
 
 
 	}
+	private static  Fruit FindFruit() { 
+		for(Fruit fruit : fruitA) {
+			if (fruit.isUnderTarget()==false);
+			{
+				fruit.setUnderTarget(true);
+				return fruit;
+			}
+		}
+		return null;
+	}
 
 
 
 
 
-	private static  Fruit findFruit() {
+	private static  void PutEdgeInFruit() {
 		Collection<node_data> search = gr.getV();
 		for(Fruit fruit : fruitA) {
 
@@ -273,7 +283,7 @@ public class AutoGame implements Runnable
 					double SrcToDSt = src.getLocation().distance2D(dst.getLocation());
 
 					//System.out.println("fruit :"+ fruit.getValue()+ " underTarget = "+fruit.isUnderTarget());
-					if(fruit.isUnderTarget() == false) {
+					//if(fruit.isUnderTarget() == false) {
 
 						double src2fruit = src.getLocation().distance2D(fruit.getPos());
 						double fruit2dest = fruit.getPos().distance2D(dst.getLocation());
@@ -283,16 +293,15 @@ public class AutoGame implements Runnable
 						if(  Math.abs(SrcToDSt - ans) < 0.00001  )
 						{
 							fruit.setEdge(e);
-							return fruit ;
 
 						}
-					}
+					//}
 				}
 
 			}
 		}
 
-		return null;
+
 	}
 
 
@@ -306,17 +315,17 @@ public class AutoGame implements Runnable
 		JSONObject t = line.getJSONObject("GameServer");
 		int rs = t.getInt("robots");
 		System.out.println(rs);
+		PutEdgeInFruit();
 		for(int i = 0 ; i< rs ; i++) {
 			try {
 				int Bestp ;
-				Fruit fruit= findFruit();
+				Fruit fruit= FindFruit();
 				if (fruit==null) System.out.println("this fruit is NULL!!!");
 				Dedge edge =(Dedge) fruit.getEdge();
 				if (edge==null) System.out.println("this edge is NULL!!!");
 
 				int min = Math.min( edge.getDest()  ,edge.getSrc() );
 				int max = Math.max( edge.getDest()  ,edge.getSrc() );
-				fruit.setUnderTarget(true);
 
 				if(fruit.getType() == 1)	Bestp= min;
 				else	Bestp= max;
@@ -328,9 +337,9 @@ public class AutoGame implements Runnable
 				e.printStackTrace();
 			}
 		}
-		for(Fruit fruit : fruitA) {
-			fruit.setUnderTarget(false);
-		}
+//		for(Fruit fruit : fruitA) {
+//			fruit.setUnderTarget(false);
+//		}
 
 		PaintRobots();
 	}
@@ -401,41 +410,39 @@ public class AutoGame implements Runnable
 
 	private static void FindClosestFruit(robot r)
 	{
-		findFruit();
+		PutEdgeInFruit();
 		Graph_Algo ag= new Graph_Algo(gr);
-	double MinDis=Double.MAX_VALUE;
-	int x;
-	List<node_data > ShortWay =r.ShortWay;
+		double MinDis=Double.MAX_VALUE;
+		int x;
+		List<node_data > ShortWay =r.ShortWay;
 
-	for(Fruit fruit : fruitA) {
-		if (fruit.getEdge()!=null && !fruit.isUnderTarget()) {
-		edge_data edge = fruit.getEdge();
-		int min = Math.min( edge.getDest()  ,edge.getSrc() );
-		int max = Math.max( edge.getDest()  ,edge.getSrc() );
-		if(fruit.getType() == 1)	x= min;
-		else	x= max;
+		for(Fruit fruit : fruitA) {
+			if (!fruit.isUnderTarget()) {
+				edge_data edge = fruit.getEdge();
+				int min = Math.min( edge.getDest()  ,edge.getSrc() );
+				int max = Math.max( edge.getDest()  ,edge.getSrc() );
+				if(fruit.getType() == 1)	x= min;
+				else	x= max;
 
 
-		DNode n = (DNode) gr.getNode(x);
-		List<node_data > tmp = ag.shortestPath(r.getSrc(), x);
-		if( tmp.size() <MinDis ) {
-			MinDis =  tmp.size();
-			ShortWay=tmp;
-		fruit.setUnderTarget(true);
+				DNode n = (DNode) gr.getNode(x);
+				List<node_data > tmp = ag.shortestPath(r.getSrc(), x);
+				if( tmp.size() <MinDis ) {
+					MinDis =  tmp.size();
+					ShortWay=tmp;
+					fruit.setUnderTarget(true);
+				}
+
+			}
 		}
-
-	}
-	}
-	r.ShortWay=ShortWay;
+		r.ShortWay=ShortWay;
 
 	}
 
 
 
 	private static void moveRobots(game_service game, graph gg) {
-		for(Fruit fruit : fruitA) {
-			fruit.setUnderTarget(false);
-		}
+		PutEdgeInFruit();
 
 		List<String> log = game.move();
 		if(log!=null) {
@@ -483,7 +490,7 @@ public class AutoGame implements Runnable
 			DNode n = new DNode();
 			int dest;
 			n=(DNode) gr.getNode(src);
-			Fruit fruit =findFruit ();
+			Fruit fruit =FindFruit ();
 			Dedge edge =(Dedge) fruit.getEdge();
 			int min = Math.min( edge.getDest()  ,edge.getSrc() );
 			int max = Math.max( edge.getDest()  ,edge.getSrc() );

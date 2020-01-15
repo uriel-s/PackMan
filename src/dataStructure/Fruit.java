@@ -11,7 +11,7 @@ public class Fruit {
 	
 	
 	public boolean isUnderTarget() {
-		return underTarget;
+		return this.underTarget;
 	}
 
 	public void setUnderTarget(boolean underTarget) {
