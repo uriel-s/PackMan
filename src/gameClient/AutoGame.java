@@ -62,7 +62,7 @@ public class AutoGame implements Runnable
 	static DGraph gr;
 	game_service game;
 	double scaleParams [];
-	ArrayList<Fruit> fruitA = new ArrayList<>();
+	public ArrayList<Fruit> fruitA = new ArrayList<>();
 
 	public AutoGame() throws JSONException
 	{
@@ -230,25 +230,38 @@ public class AutoGame implements Runnable
 
 		for (node_data d : search) {
 			int k = d.getKey();
-
+		
 			for(edge_data e : gr.getE(k)) {
 				DNode src = (DNode) gr.getNode(e.getSrc());
 				DNode dst = (DNode) gr.getNode(e.getDest());
+				System.out.println("this is src  "+src);
+				System.out.println("this is dst  " +dst);
+
+				
 				double SrcToDSt = src.getLocation().distance2D(dst.getLocation());
+				
 				for(Fruit fruit : fruitA) {
-
-					if(!(fruit.underTarget)) {
-
+                      
+					if(fruit.isUnderTarget() == false) {
+                          
 						double src2fruit = src.getLocation().distance2D(fruit.getPos());
 						double fruit2dest = fruit.getPos().distance2D(dst.getLocation());
 						double ans= src2fruit + fruit2dest;
 
 
-						if(  Math.abs(SrcToDSt-ans) <0.0001  ) 
+						if(  Math.abs(SrcToDSt - ans) < 0.0001  ) 
 						{
-							fruit.underTarget = true;
+							int min = Math.min( src.getKey(),dst.getKey() );
+							int max = Math.max( src.getKey(),dst.getKey() );
+							fruit.setUnderTarget(true);
 
-							return k ;
+							if(fruit.getType() == 1) {
+								System.out.println(min);
+								return min;
+							}
+							System.out.println(max);
+
+							return max;
 						}
 					}
 				}
@@ -257,14 +270,6 @@ public class AutoGame implements Runnable
 		}
 		return 0;
 	}
-
-	//	private int RobotBestLocate()
-	//	{
-	//		int robotNode = findFruit() ;
-	//		
-	//		return robotNode;
-	//
-	//	}
 
 
 	private void locateRobots() throws JSONException {
@@ -275,13 +280,15 @@ public class AutoGame implements Runnable
 		System.out.println(rs);
 		for(int i = 0 ; i< rs ; i++) {
 			try {
-				int Bestp=findFruit();
+				int Bestp = findFruit();
 				game.addRobot(Bestp);
 			}
 			catch (Exception e) {
 				e.printStackTrace();	
 			}
-
+			for(Fruit fruit : fruitA) {
+				fruit.setUnderTarget(false);
+			}
 		}
 		PaintRobots();
 	}
@@ -337,10 +344,10 @@ public class AutoGame implements Runnable
 			PaintRobots();
 			int grade=FindGrade();
 			long t = game.timeToEnd();
-			
+
 			String TimeLeft = "Time to end : " + t;
 			String Score = "your score is : " + grade;
-			
+
 			StdDraw.text((scaleParams[0]+scaleParams[2])/2,scaleParams[1]+0.001 , TimeLeft);
 			StdDraw.text((scaleParams[0]+scaleParams[2])/2,scaleParams[1]+0.0005 , Score);
 			StdDraw.show();
@@ -385,23 +392,16 @@ public class AutoGame implements Runnable
 	 */
 	private static int nextNode(graph g, int src) {
 
-		if(StdDraw.isMousePressed()) {
-			double x = StdDraw.mouseX();
-			double y = StdDraw.mouseY();
-			Collection<node_data> search = gr.getV();
-			for(node_data d : search ) {
-				Point3D p = d.getLocation();
-				double _x =p.x();
-				double _y =p.y();
-				double distanceX = Math.abs(x-_x);
-				double distanceY = Math.abs(y-_y);
-				if(distanceX<0.0008 && distanceY<0.0008) {
-					return d.getKey();
-				}
-			}
-
-		}
-		return -1;
+		int ans = -1;
+		Collection<edge_data> ee = g.getE(src);
+		Iterator<edge_data> itr = ee.iterator();
+		int s = ee.size();
+		int r = (int)(Math.random()*s);
+		int i=0;
+		while(i<r) {itr.next();i++;}
+		ans = itr.next().getDest();
+		return ans;
+	
 	}
 	@Override
 	public void run() {

@@ -6,7 +6,15 @@ public class Fruit {
 	private int type;
 	private double value;
 	private  Point3D pos;
-	public  boolean underTarget;
+   private boolean underTarget;
+
+	public boolean isUnderTarget() {
+	    return underTarget;
+}
+
+public void setUnderTarget(boolean underTarget) {
+	this.underTarget = underTarget;
+}
 
 	public int getType() {
 		return type;
@@ -32,19 +40,11 @@ public class Fruit {
 		this.pos = pos;
 	}
 
-
-	public Fruit() {
-	}
-
-
-
-
-
 	public Fruit(int type,double value,Point3D p) {
 		this.type=type;
 		this.value=value;
 		this.pos=p;
-		underTarget = false;
+		this.underTarget = false;
 
 	}
 
