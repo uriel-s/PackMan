@@ -208,6 +208,7 @@ public class AutoGame implements Runnable
 				Point3D p= getloc(pos);
 				Fruit f = new Fruit(type,value,p);
 				fruitA.add(f);
+				
 				if(f.getType()==-1) {
 					StdDraw.setPenColor(Color.YELLOW);
 					StdDraw.setPenRadius(0.03);
@@ -227,67 +228,48 @@ public class AutoGame implements Runnable
 		}
 	}
 
-	private int findFruit2(node_data d) 
-	{
-		int k = d.getKey();
-		for(edge_data e : gr.getE(k)) 
-		{
-			DNode src = (DNode) gr.getNode(e.getSrc());
-			DNode dst = (DNode) gr.getNode(e.getDest());
-//			System.out.println("this is src  "+src);
-//			System.out.println("this is dst  " +dst);
-
-			for(Fruit fruit : fruitA) {
-				if (fruit.isUnderTarget())
-				System.out.println("fruit : " +fruit.getValue() +" isunderTarget ");
-				if(fruit.isUnderTarget() == false)
-			{	
-					System.out.println("fruit : " +fruit.getValue() +" is NOT underTarget ");
+		for (node_data d : search) {
+			int k = d.getKey();
+		
+			for(edge_data e : gr.getE(k)) {
+				DNode src = (DNode) gr.getNode(e.getSrc());
+				DNode dst = (DNode) gr.getNode(e.getDest());
+				System.out.println("this is src  "+src);
+				System.out.println("this is dst  " +dst);
+                
+				
 				double SrcToDSt = src.getLocation().distance2D(dst.getLocation());
-				double src2fruit = src.getLocation().distance2D(fruit.getPos());
-				double fruit2dest = fruit.getPos().distance2D(dst.getLocation());
-				double ans= src2fruit + fruit2dest;
+				
+				for(Fruit fruit : fruitA) {
+                      
+					if(fruit.isUnderTarget() == false) {
+                          
+						double src2fruit = src.getLocation().distance2D(fruit.getPos());
+						double fruit2dest = fruit.getPos().distance2D(dst.getLocation());
+						double ans= src2fruit + fruit2dest;
 
-				if(  Math.abs(SrcToDSt - ans) < 0.0001  ) 
-				{
-					int min = Math.min( src.getKey(),dst.getKey() );
-					int max = Math.max( src.getKey(),dst.getKey() );
-					fruit.setUnderTarget(true);
-					if (fruit.isUnderTarget())
-						System.out.println("fruit : " +fruit.getValue() +" isunderTarget ");
-					
-					if(fruit.getType() == 1) 
-					{
-						System.out.println(min);
-						return min;
-					}
-					else {	
-						System.out.println(max);
-						return max;
+
+						if(  Math.abs(SrcToDSt - ans) < 0.00001  ) 
+						{
+							int min = Math.min( src.getKey(),dst.getKey() );
+							int max = Math.max( src.getKey(),dst.getKey() );
+							fruit.setUnderTarget(true);
+
+							if(fruit.getType() == 1) {
+								System.out.println(min);
+								return min;
+							}
+							System.out.println(max);
+
+							return max;
+						}
 					}
 
 
 				}
 
 			}
-			}
-		}
-
-		return -1;	
 	}
-
-
-	private int findFruit() {
-		Collection<node_data> search = gr.getV();
-
-		for (node_data d : search) {
-System.out.println("looking for fruit in the next node "+ d.getKey());
-			int ans =findFruit2(d);
-			if(ans!=-1) {
-				System.out.println("put a robot in node :" + ans);	
-				return ans;
-			}
-		}
 		return 0;
 	}
 
@@ -306,10 +288,11 @@ System.out.println("looking for fruit in the next node "+ d.getKey());
 			catch (Exception e) {
 				e.printStackTrace();	
 			}
+		}
 			for(Fruit fruit : fruitA) {
 				fruit.setUnderTarget(false);
 			}
-		}
+		
 		PaintRobots();
 	}
 	private void PaintRobots() throws JSONException {
@@ -413,13 +396,13 @@ System.out.println("looking for fruit in the next node "+ d.getKey());
 	private static int nextNode(graph g, int src) {
 
 		int ans = -1;
-		Collection<edge_data> ee = g.getE(src);
-		Iterator<edge_data> itr = ee.iterator();
-		int s = ee.size();
-		int r = (int)(Math.random()*s);
-		int i=0;
-		while(i<r) {itr.next();i++;}
-		ans = itr.next().getDest();
+//		Collection<edge_data> ee = g.getE(src);
+//		Iterator<edge_data> itr = ee.iterator();
+//		int s = ee.size();
+//		int r = (int)(Math.random()*s);
+//		int i=0;
+//		while(i<r) {itr.next();i++;}
+//		ans = itr.next().getDest();
 		return ans;
 
 	}
