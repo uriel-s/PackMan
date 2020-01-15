@@ -1,4 +1,5 @@
-/utils/
-/gameClient/
-/dataStructure/
+/.DS_Store
 /algorithms/
+/dataStructure/
+/gameClient/
+/utils/
