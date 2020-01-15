@@ -62,7 +62,7 @@ public class AutoGame implements Runnable
 	static DGraph gr;
 	game_service game;
 	double scaleParams [];
-	public ArrayList<Fruit> fruitA = new ArrayList<>();
+	public static ArrayList<Fruit> fruitA = new ArrayList<>();
 
 	public AutoGame() throws JSONException
 	{
@@ -207,6 +207,7 @@ public class AutoGame implements Runnable
 				Point3D p= getloc(pos);
 				Fruit f = new Fruit(type,value,p);
 				fruitA.add(f);
+				
 				if(f.getType()==-1) {
 					StdDraw.setPenColor(Color.YELLOW);
 					StdDraw.setPenRadius(0.03);
@@ -236,7 +237,7 @@ public class AutoGame implements Runnable
 				DNode dst = (DNode) gr.getNode(e.getDest());
 				System.out.println("this is src  "+src);
 				System.out.println("this is dst  " +dst);
-
+                
 				
 				double SrcToDSt = src.getLocation().distance2D(dst.getLocation());
 				
@@ -249,7 +250,7 @@ public class AutoGame implements Runnable
 						double ans= src2fruit + fruit2dest;
 
 
-						if(  Math.abs(SrcToDSt - ans) < 0.0001  ) 
+						if(  Math.abs(SrcToDSt - ans) < 0.00001  ) 
 						{
 							int min = Math.min( src.getKey(),dst.getKey() );
 							int max = Math.max( src.getKey(),dst.getKey() );
@@ -267,7 +268,7 @@ public class AutoGame implements Runnable
 				}
 
 			}
-		}
+	}
 		return 0;
 	}
 
@@ -286,10 +287,11 @@ public class AutoGame implements Runnable
 			catch (Exception e) {
 				e.printStackTrace();	
 			}
+		}
 			for(Fruit fruit : fruitA) {
 				fruit.setUnderTarget(false);
 			}
-		}
+		
 		PaintRobots();
 	}
 	private void PaintRobots() throws JSONException {
@@ -393,13 +395,13 @@ public class AutoGame implements Runnable
 	private static int nextNode(graph g, int src) {
 
 		int ans = -1;
-		Collection<edge_data> ee = g.getE(src);
-		Iterator<edge_data> itr = ee.iterator();
-		int s = ee.size();
-		int r = (int)(Math.random()*s);
-		int i=0;
-		while(i<r) {itr.next();i++;}
-		ans = itr.next().getDest();
+//		Collection<edge_data> ee = g.getE(src);
+//		Iterator<edge_data> itr = ee.iterator();
+//		int s = ee.size();
+//		int r = (int)(Math.random()*s);
+//		int i=0;
+//		while(i<r) {itr.next();i++;}
+//		ans = itr.next().getDest();
 		return ans;
 	
 	}
