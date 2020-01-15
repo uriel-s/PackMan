@@ -7,7 +7,9 @@ public class Fruit {
 	private double value;
 	private  Point3D pos;
 	private boolean underTarget;
-
+	private edge_data edge;
+	
+	
 	public boolean isUnderTarget() {
 		return underTarget;
 	}
@@ -45,7 +47,18 @@ public class Fruit {
 		this.value=value;
 		this.pos=p;
 		this.underTarget = false;
+		this.edge =null;
+	}
 
+	public edge_data getEdge() {
+		return edge;
+	}
+
+	
+
+	public void setEdge(edge_data e) {
+		this.edge = e;
+		
 	}
 
 }

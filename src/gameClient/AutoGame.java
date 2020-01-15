@@ -16,6 +16,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -52,6 +53,7 @@ import javax.swing.JTextField;
 
 import algorithms.*;
 import dataStructure.*;
+import jdk.internal.org.objectweb.asm.tree.analysis.Value;
 import utils.*;
 
 
@@ -63,9 +65,12 @@ public class AutoGame implements Runnable
 	game_service game;
 	double scaleParams [];
 	public static ArrayList<Fruit> fruitA = new ArrayList<>();
+	public static ArrayList<robot> Robots = new ArrayList<>();
 
 	public AutoGame() throws JSONException
 	{
+		fruitA.clear();
+
 		AutoGame.gr=new DGraph();
 		String g = choose_level();
 		gr.init(g);
@@ -73,6 +78,7 @@ public class AutoGame implements Runnable
 		paint();
 		PaintFruits();
 		PaintRobots();
+
 		run();
 	}
 
@@ -150,7 +156,7 @@ public class AutoGame implements Runnable
 				StdDraw.line(x, y, x1, y1);
 
 				/*
-				 * draw yellow point on 80% way of the edge
+				 * draw green point on 80% way of the edge
 				 */
 				StdDraw.setPenColor(Color.GREEN);
 				double a=0,b=0;
@@ -196,6 +202,8 @@ public class AutoGame implements Runnable
 		JSONObject line;
 		try {
 			Iterator<String> f_iter = game.getFruits().iterator();
+			fruitA.clear();
+
 			while(f_iter.hasNext())
 			{
 				line = new JSONObject(f_iter.next());
@@ -206,8 +214,9 @@ public class AutoGame implements Runnable
 				String pos = ttt.getString("pos");
 				Point3D p= getloc(pos);
 				Fruit f = new Fruit(type,value,p);
+
 				fruitA.add(f);
-				
+
 				if(f.getType()==-1) {
 					StdDraw.setPenColor(Color.YELLOW);
 					StdDraw.setPenRadius(0.03);
@@ -221,56 +230,74 @@ public class AutoGame implements Runnable
 				}
 
 			}
+			SortFruitsA();
 		}
 		catch (Exception e) {
 			e.printStackTrace();	
 		}
 	}
-	private int findFruit() {
-		Collection<node_data> search = gr.getV();
+	private void SortFruitsA() {
 
-		for (node_data d : search) {
-			int k = d.getKey();
-		
-			for(edge_data e : gr.getE(k)) {
-				DNode src = (DNode) gr.getNode(e.getSrc());
-				DNode dst = (DNode) gr.getNode(e.getDest());
-				System.out.println("this is src  "+src);
-				System.out.println("this is dst  " +dst);
-                
-				
-				double SrcToDSt = src.getLocation().distance2D(dst.getLocation());
-				
-				for(Fruit fruit : fruitA) {
-                      
+		int n = fruitA.size();
+		for (int i = 0; i < n-1; i++) {
+			for (int j = 0; j < n-i-1; j++) {
+				if (fruitA.get(j).getValue() < fruitA.get(j+1).getValue()) 
+				{ 
+					Fruit temp = fruitA.get(j); 
+					fruitA.set(j, fruitA.get(j+1) ); 
+					fruitA.set(j+1, temp ); 
+
+				}
+			}
+		}
+
+
+	}
+
+	
+	
+	
+
+	private static  Fruit findFruit() {
+		Collection<node_data> search = gr.getV();
+		for(Fruit fruit : fruitA) {
+
+			for (node_data d : search) {
+				int k = d.getKey();
+
+				for(edge_data e : gr.getE(k)) {
+					DNode src = (DNode) gr.getNode(e.getSrc());
+					DNode dst = (DNode) gr.getNode(e.getDest());
+
+					double SrcToDSt = src.getLocation().distance2D(dst.getLocation());
+
+					//System.out.println("fruit :"+ fruit.getValue()+ " underTarget = "+fruit.isUnderTarget());                       
 					if(fruit.isUnderTarget() == false) {
-                          
+
 						double src2fruit = src.getLocation().distance2D(fruit.getPos());
 						double fruit2dest = fruit.getPos().distance2D(dst.getLocation());
 						double ans= src2fruit + fruit2dest;
 
 
 						if(  Math.abs(SrcToDSt - ans) < 0.00001  ) 
-						{
-							int min = Math.min( src.getKey(),dst.getKey() );
-							int max = Math.max( src.getKey(),dst.getKey() );
-							fruit.setUnderTarget(true);
+						{ 
+							fruit.setEdge(e);
+							return fruit ;
 
-							if(fruit.getType() == 1) {
-								System.out.println(min);
-								return min;
-							}
-							System.out.println(max);
-
-							return max;
 						}
 					}
 				}
 
 			}
+		}
+
+		return null;
 	}
-		return 0;
-	}
+
+
+
+
+
 
 
 	private void locateRobots() throws JSONException {
@@ -281,17 +308,30 @@ public class AutoGame implements Runnable
 		System.out.println(rs);
 		for(int i = 0 ; i< rs ; i++) {
 			try {
-				int Bestp = findFruit();
+				int Bestp ;
+				Fruit fruit= findFruit();
+				if (fruit==null) System.out.println("this fruit is NULL!!!");
+				Dedge edge =(Dedge) fruit.getEdge();
+				if (edge==null) System.out.println("this edge is NULL!!!");
+
+				int min = Math.min( edge.getDest()  ,edge.getSrc() );
+				int max = Math.max( edge.getDest()  ,edge.getSrc() );
+				fruit.setUnderTarget(true);
+
+				if(fruit.getType() == 1)	Bestp= min;
+				else	Bestp= max;
+
+
 				game.addRobot(Bestp);
 			}
 			catch (Exception e) {
 				e.printStackTrace();	
 			}
 		}
-			for(Fruit fruit : fruitA) {
-				fruit.setUnderTarget(false);
-			}
-		
+		for(Fruit fruit : fruitA) {
+			fruit.setUnderTarget(false);
+		}
+
 		PaintRobots();
 	}
 	private void PaintRobots() throws JSONException {
@@ -310,10 +350,11 @@ public class AutoGame implements Runnable
 				int id = ttt.getInt("id");
 				String pos = ttt.getString("pos");
 				Point3D p= getloc(pos);
-				robot f = new robot( id,  speed,  src,  dest, p, value);
+				robot r = new robot( id,  speed,  src,  dest, p, value);
+				Robots.add(r);
 				StdDraw.setPenColor(Color.black);
 				StdDraw.setPenRadius(0.03);
-				StdDraw.picture(f.getPos().x(), f.getPos().y(),"ice.png",0.0005,0.0005);
+				StdDraw.picture(r.getPos().x(), r.getPos().y(),"ice.png",0.0005,0.0005);
 			}
 		}
 
@@ -358,17 +399,51 @@ public class AutoGame implements Runnable
 
 	}
 
+	private static void FindClosestFruit(robot r)
+	{  
+		findFruit();
+		Graph_Algo ag= new Graph_Algo(gr);
+	double MinDis=Double.MAX_VALUE;
+	int x;
+	List<node_data > ShortWay =r.ShortWay;
 
+	for(Fruit fruit : fruitA) {
+		if (fruit.getEdge()!=null && !fruit.isUnderTarget()) {
+		edge_data edge = fruit.getEdge();
+		int min = Math.min( edge.getDest()  ,edge.getSrc() );
+		int max = Math.max( edge.getDest()  ,edge.getSrc() );
+		if(fruit.getType() == 1)	x= min;
+		else	x= max;
+
+
+		DNode n = (DNode) gr.getNode(x);    
+		List<node_data > tmp = ag.shortestPath(r.getSrc(), x);
+		if( tmp.size() <MinDis ) {
+			MinDis =  tmp.size();
+			ShortWay=tmp;
+		fruit.setUnderTarget(true);
+		}
+
+	}
+	}
+	r.ShortWay=ShortWay;
+
+	}
 
 
 
 	private static void moveRobots(game_service game, graph gg) {
+		for(Fruit fruit : fruitA) {
+			fruit.setUnderTarget(false);
+		}
+		
 		List<String> log = game.move();
 		if(log!=null) {
 			long t = game.timeToEnd();
 			for(int i=0;i<log.size();i++) {
 				String robot_json = log.get(i);
 				try {
+					
 					JSONObject line = new JSONObject(robot_json);
 					JSONObject ttt = line.getJSONObject("Robot");
 					int rid = ttt.getInt("id");
@@ -376,8 +451,18 @@ public class AutoGame implements Runnable
 					int dest = ttt.getInt("dest");
 
 					if(dest==-1) {
-						dest = nextNode(gg, src);
+
+						robot r =Robots.get(i);
+						r.setSrc(src);
+						
+						if(r.ShortWay.size()==1  || r.ShortWay.size()==0) {
+							nextNode(i,gg, src);
+						}
+						System.out.println(r.ShortWay);
+						if(r.ShortWay.size()>1)
+							dest=r.ShortWay.get(1).getKey();
 						game.chooseNextEdge(rid, dest);
+						r.ShortWay.remove(0);
 						System.out.println("Turn to node: "+dest+"  time to end:"+(t/1000));
 						System.out.println(ttt);
 					}
@@ -387,29 +472,38 @@ public class AutoGame implements Runnable
 		}
 	}
 	/**
-	 * let the user choose next node by clicking the mouse
+	 * 
 	 * @param g
 	 * @param src
 	 * @return
 	 */
-	private static int nextNode(graph g, int src) {
+	private static void nextNode(int i,graph g, int src) {
+		robot r = Robots.get(i);
+		{
+			DNode n = new DNode();
+			int dest;
+			n=(DNode) gr.getNode(src);
+			Fruit fruit =findFruit ();
+			Dedge edge =(Dedge) fruit.getEdge();
+			int min = Math.min( edge.getDest()  ,edge.getSrc() );
+			int max = Math.max( edge.getDest()  ,edge.getSrc() );
+			fruit.setUnderTarget(true);
+			if(fruit.getType() == -1)	dest= min;
+			else dest= max;
+			Graph_Algo graph_algo= new Graph_Algo(g);
+			List<node_data > ShortWay = graph_algo.shortestPath(src, dest);
+			r.ShortWay=ShortWay;	
+		}
 
-		int ans = -1;
-//		Collection<edge_data> ee = g.getE(src);
-//		Iterator<edge_data> itr = ee.iterator();
-//		int s = ee.size();
-//		int r = (int)(Math.random()*s);
-//		int i=0;
-//		while(i<r) {itr.next();i++;}
-//		ans = itr.next().getDest();
-		return ans;
-	
 	}
+
+
 	@Override
 	public void run() {
 		try {
 			startGameGUI();
-		} catch (JSONException e) {
+		} 
+		catch (JSONException e) {
 			e.printStackTrace();
 		}		
 	}
