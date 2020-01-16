@@ -53,7 +53,12 @@ import javax.swing.JTextField;
 import algorithms.*;
 import dataStructure.*;
 import utils.*;
-
+/**
+ * this class represent an gui for the manual robots game
+ * 
+ * @author Yair
+ *
+ */
 
 
 public class MyGameGUI implements Runnable
@@ -93,7 +98,11 @@ public class MyGameGUI implements Runnable
 
 	}
 
-
+	/**
+	 * set the scale of the canvas to match to coordinate of the graph in the specified level
+	 * @param game
+	 * @throws JSONException
+	 */
 
 	private void set_scale(game_service game) throws JSONException {
 		StdDraw.setCanvasSize(1000,600);
@@ -106,7 +115,7 @@ public class MyGameGUI implements Runnable
 		gr.init(game.getGraph());
 
 
-		Collection<node_data> d =gr.getV();
+		Collection<node_data> d = gr.getV();
 		for(node_data node : d) {
 			max_x = Math.max(max_x, node.getLocation().x());
 			max_y = Math.max(max_y, node.getLocation().y());
@@ -174,7 +183,10 @@ public class MyGameGUI implements Runnable
 			}
 		}
 	}
-
+	/**
+	 * let the user choose witch level to play with an input window
+	 * @return
+	 */
 	public String choose_level() {
 		JSONObject line;
 		try {
@@ -191,7 +203,11 @@ public class MyGameGUI implements Runnable
 		return null;
 	}
 
-
+	/**
+	 * get the fruits from the game server
+	 * build Fruit object for each fruit 
+	 * draw the fruit on the graph - red point for apple and yellow for banana
+	 */
 	private void PaintFruits() 
 	{
 		JSONObject line;
@@ -206,7 +222,9 @@ public class MyGameGUI implements Runnable
 				int type = ttt.getInt("type");
 				String pos = ttt.getString("pos");
 				Point3D p= getloc(pos);
+
 				Fruit f = new Fruit(type,value,p);
+
 				if(f.getType()==-1) {
 					StdDraw.setPenColor(Color.YELLOW);
 					StdDraw.setPenRadius(0.03);
@@ -225,6 +243,11 @@ public class MyGameGUI implements Runnable
 			e.printStackTrace();	
 		}
 	}
+	/**
+	 * for each robot let the user choose where to locate them in the beggining of the game
+	 * use input dialog window
+	 * @throws JSONException
+	 */
 	private void locateRobots() throws JSONException {
 		JSONObject line;
 		line = new JSONObject(game.toString());
@@ -244,6 +267,10 @@ public class MyGameGUI implements Runnable
 		}
 		PaintRobots();
 	}
+	/**
+	 * paint the robots locations on the graph
+	 * @throws JSONException
+	 */
 	private void PaintRobots() throws JSONException {
 		JSONObject line;
 		line = new JSONObject(game.toString());
@@ -272,7 +299,7 @@ public class MyGameGUI implements Runnable
 		}
 
 	}
-
+    
 	public Point3D getloc (String s)
 	{
 		String[] locations = s.split(",");
@@ -361,7 +388,7 @@ public class MyGameGUI implements Runnable
 		}
 		return -1;
 	}
-	
+
 	@Override
 	public void run() {
 		try {
