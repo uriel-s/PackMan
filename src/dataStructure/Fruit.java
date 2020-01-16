@@ -42,6 +42,9 @@ public class Fruit {
 		this.pos = pos;
 	}
 
+	public Fruit() {
+			
+	}
 	public Fruit(int type,double value,Point3D p) {
 		this.type=type;
 		this.value=value;

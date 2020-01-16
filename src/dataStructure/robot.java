@@ -13,6 +13,7 @@ public class robot {
 	private Point3D pos;
 	private double value;
 	public List<node_data > ShortWay ;
+	public Fruit fruit  ;
 	
 	
 	public robot(int id, int speed, int src, int dest, Point3D pos, double value) {

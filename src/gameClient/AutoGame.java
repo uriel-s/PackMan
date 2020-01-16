@@ -66,10 +66,10 @@ public class AutoGame implements Runnable
 	double scaleParams [];
 	public static ArrayList<Fruit> fruitA = new ArrayList<>();
 	public static ArrayList<robot> Robots = new ArrayList<>();
-
-	public AutoGame() throws JSONException
+	public KML_Logger kml;
+	public AutoGame() throws JSONException, IOException
 	{
-		
+		kml= new KML_Logger();
 		fruitA.clear();
 		AutoGame.gr=new DGraph();
 		String g = choose_level();
@@ -81,11 +81,11 @@ public class AutoGame implements Runnable
 		run();
 	}
 
-/**
- * 
- * @return the number of points collected so far in this level
- * @throws JSONException
- */
+	/**
+	 * 
+	 * @return the number of points collected so far in this level
+	 * @throws JSONException
+	 */
 	public int FindGrade() throws JSONException {
 		String info = game.toString();
 		JSONObject line;
@@ -102,11 +102,11 @@ public class AutoGame implements Runnable
 
 
 	}
-    /**
-     * set the scale of range (x0,x1,y0,y1) to match the coordinate in the level
-     * @param game
-     * @throws JSONException
-     */
+	/**
+	 * set the scale of range (x0,x1,y0,y1) to match the coordinate in the level
+	 * @param game
+	 * @throws JSONException
+	 */
 
 
 	private void set_scale(game_service game) throws JSONException {
@@ -188,10 +188,10 @@ public class AutoGame implements Runnable
 			}
 		}
 	}
-    /**
-     * let the user choose witch level to active 
-     * @return
-     */
+	/**
+	 * let the user choose witch level to active 
+	 * @return
+	 */
 	public String choose_level() {
 		try {
 			JFrame in = new JFrame();
@@ -206,17 +206,17 @@ public class AutoGame implements Runnable
 		}
 		return null;
 	}
-    /**
-     * this function read the fruits data from json,add it to the list of fruits object and paint them in
-     * the correct location
-     */
+	/**
+	 * this function read the fruits data from json,add it to the list of fruits object and paint them in
+	 * the correct location
+	 */
 	private void PaintFruits() 
 	{
 		JSONObject line;
 		try {
 			Iterator<String> f_iter = game.getFruits().iterator();
 			fruitA.clear();
-            //read the fruits data , build a fruit object and add it to the list
+			//read the fruits data , build a fruit object and add it to the list
 			while(f_iter.hasNext())
 			{
 				line = new JSONObject(f_iter.next());
@@ -229,7 +229,7 @@ public class AutoGame implements Runnable
 				Fruit f = new Fruit(type,value,p);
 
 				fruitA.add(f);
-                 // -1 indicates a banana
+				// -1 indicates a banana
 				if(f.getType()==-1) {
 					StdDraw.setPenColor(Color.YELLOW);
 					StdDraw.setPenRadius(0.04);
@@ -251,8 +251,8 @@ public class AutoGame implements Runnable
 			}
 			SortFruitsA();
 		}
-		
-		
+
+
 		catch (Exception e) {
 			e.printStackTrace();	
 		}
@@ -398,11 +398,12 @@ public class AutoGame implements Runnable
 		return p;
 	}
 
-	public void startGameGUI() throws JSONException{
+	public void startGameGUI() throws JSONException, IOException{
 		locateRobots();
 		game.startGame();
 		System.out.println("robot located");
 		while(game.isRunning()) {
+			kml.AddLoop();
 			StdDraw.enableDoubleBuffering();
 			StdDraw.clear();
 			moveRobots(game, gr);
@@ -420,7 +421,7 @@ public class AutoGame implements Runnable
 			StdDraw.show();
 
 		}
-
+		kml.End();
 	}
 
 	private static void FindClosestFruit(robot r)
@@ -513,24 +514,24 @@ public class AutoGame implements Runnable
 			int max = Math.max( edge.getDest()  ,edge.getSrc() );
 			fruit.setUnderTarget(true);
 
-            int temp;
+			int temp;
 			if(fruit.getType() == -1) {
 				dest= min;
 				temp = max;
 			}else {
 				dest = max ;
 				temp = min;
-				}
-				Graph_Algo graph_algo= new Graph_Algo(g);
-				if(src != dest) {
-					List<node_data > ShortWay = graph_algo.shortestPath(src, dest);
-					r.ShortWay=ShortWay;
-					
-				} else {
-					List<node_data > ShortWay = graph_algo.shortestPath(src, temp);
-					r.ShortWay=ShortWay;
-				}
-				
+			}
+			Graph_Algo graph_algo= new Graph_Algo(g);
+			if(src != dest) {
+				List<node_data > ShortWay = graph_algo.shortestPath(src, dest);
+				r.ShortWay=ShortWay;
+
+			} else {
+				List<node_data > ShortWay = graph_algo.shortestPath(src, temp);
+				r.ShortWay=ShortWay;
+			}
+
 		}
 
 	}
@@ -542,6 +543,9 @@ public class AutoGame implements Runnable
 			startGameGUI();
 		} 
 		catch (JSONException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
 	}
