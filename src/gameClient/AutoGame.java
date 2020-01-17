@@ -497,7 +497,7 @@ public class AutoGame implements Runnable
 		}
 	}
 	/**
-	 * 
+	 * this algo coose thennext node the robot will torn to
 	 * @param g
 	 * @param src
 	 * @return
