@@ -61,15 +61,17 @@ import utils.*;
  */
 
 
-public class MyGameGUI implements Runnable
+public class MyGameGUI implements Runnable , Packmen_game
 
 {
 	static DGraph gr;
 	game_service game;
 	double scaleParams [];
-
-	public MyGameGUI() throws JSONException
+public KML_Logger kml ;
+	public MyGameGUI() throws JSONException, IOException
 	{
+		 this.kml= new KML_Logger();
+		
 		MyGameGUI.gr=new DGraph();
 		String g = choose_level();
 		gr.init(g);
