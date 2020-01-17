@@ -20,10 +20,10 @@ import utils.Point3D;
 public class sdf {
 
 	public static void main(String [] args) throws JSONException, IOException {
-		   AutoGame g = new AutoGame();
 		//KML_Logger k= new KML_Logger(g);
-	  //  MyGameGUI m = new MyGameGUI();
+	      MyGameGUI m = new MyGameGUI();
 	}
+	
 	
 
 }
