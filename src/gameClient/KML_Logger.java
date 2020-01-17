@@ -265,11 +265,12 @@ public class KML_Logger {
 	}
 
 
-	public void  End() throws IOException {
+	public void  End(boolean delete) throws IOException {
 		writer.write("\r\n" + 
 				"</Document>\r\n" + 
 				"\r\n" + 
 				"</kml>");
+	 if(delete) file.delete();
 	}
 
 	//public File file()
