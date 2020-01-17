@@ -75,6 +75,7 @@ public class ClientGame implements Runnable
 	{
 		kml= new KML_Logger();
 		fruitA.clear();
+	
 		ClientGame.gr=new DGraph();
 		String g = choose_level();
 		gr.init(g);

@@ -62,18 +62,22 @@ public class AutoGame implements Runnable
 
 {
 	static DGraph gr;
-	game_service game;
+	public static game_service game;
 	double scaleParams [];
 	public static ArrayList<Fruit> fruitA = new ArrayList<>();
 	public static ArrayList<robot> Robots = new ArrayList<>();
 	public KML_Logger kml;
+	boolean delete;
 	public AutoGame() throws JSONException, IOException
 	{
-		kml= new KML_Logger();
+		
 		fruitA.clear();
 		AutoGame.gr=new DGraph();
+		kml= new KML_Logger();
 		String g = choose_level();
+	System.out.println(game.toString());
 		gr.init(g);
+
 		set_scale(game);
 		paint();
 		PaintFruits();
@@ -421,7 +425,7 @@ public class AutoGame implements Runnable
 			StdDraw.show();
 
 		}
-		kml.End();
+		kml.End(delete);
 	}
 
 	private static void FindClosestFruit(robot r)

@@ -255,6 +255,7 @@ public class KML_Logger {
 
 	public String RobotLocToString(int i)
 	{ 
+		//Packmen_game.Robots.get(i).getPos();
 		Point3D p= AutoGame.Robots.get(i).getPos();
 		double x=p.x();
 		double y=p.y();
@@ -264,11 +265,12 @@ public class KML_Logger {
 	}
 
 
-	public void  End() throws IOException {
+	public void  End(boolean delete) throws IOException {
 		writer.write("\r\n" + 
 				"</Document>\r\n" + 
 				"\r\n" + 
 				"</kml>");
+	 if(delete) file.delete();
 	}
 
 	//public File file()
