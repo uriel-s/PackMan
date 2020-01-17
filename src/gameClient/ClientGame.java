@@ -67,9 +67,14 @@ public class ClientGame implements Runnable
 	static DGraph gr;
 	game_service game;
 	double scaleParams [];
+	public static ArrayList<Fruit> fruitA = new ArrayList<>();
+	public static ArrayList<robot> Robots = new ArrayList<>();
+	public KML_Logger kml;
 
-	public ClientGame() throws JSONException
+	public ClientGame() throws JSONException, IOException
 	{
+		kml= new KML_Logger();
+		fruitA.clear();
 		ClientGame.gr=new DGraph();
 		String g = choose_level();
 		gr.init(g);
@@ -224,7 +229,7 @@ public class ClientGame implements Runnable
 				Point3D p= getloc(pos);
 
 				Fruit f = new Fruit(type,value,p);
-
+                 fruitA.add(f);
 				if(f.getType()==-1) {
 					StdDraw.setPenColor(Color.YELLOW);
 					StdDraw.setPenRadius(0.03);
@@ -288,6 +293,7 @@ public class ClientGame implements Runnable
 				String pos = ttt.getString("pos");
 				Point3D p= getloc(pos);
 				robot f = new robot( id,  speed,  src,  dest, p, value);
+				Robots.add(f);
 				StdDraw.setPenColor(Color.black);
 				StdDraw.setPenRadius(0.03);
 				StdDraw.picture(f.getPos().x(), f.getPos().y(),"ice.png",0.0005,0.0005);
