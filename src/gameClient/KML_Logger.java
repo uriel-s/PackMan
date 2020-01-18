@@ -75,7 +75,7 @@ public class KML_Logger {
 
 	public KML_Logger() throws JSONException, IOException
 	{
-		file  = new File("output.kml");
+		file  = new File("realfinal.kml");
 		writer = new FileWriter(file);
 
 		//Create the file
@@ -104,109 +104,55 @@ public class KML_Logger {
 
 	private String startStr() {
 		// TODO Auto-generated method stub
-		return  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" + 
-		"\r\n" + 
-		"-<kml xmlns=\"http://earth.google.com/kml/2.2\">\r\n" + 
-		"\r\n" + 
-		"\r\n" + 
-		"-<Document>\r\n" + 
-		"\r\n" + 
-		"<name>Points with TimeStamps</name>\r\n" + 
-		"\r\n" + 
-		"\r\n" + 
-		"-<Style id=\"paddle-a\">\r\n" + 
-		"\r\n" + 
-		"\r\n" + 
-		"-<IconStyle>\r\n" + 
-		"\r\n" + 
-		"\r\n" + 
-		"-<Icon>\r\n" + 
-		"\r\n" + 
-		"<href>http://maps.google.com/mapfiles/kml/paddle/A.png</href>\r\n" + 
-		"\r\n" + 
-		"</Icon>\r\n" + 
-		"\r\n" + 
-		"<hotSpot yunits=\"pixels\" xunits=\"pixels\" y=\"1\" x=\"32\"/>\r\n" + 
-		"\r\n" + 
-		"</IconStyle>\r\n" + 
-		"\r\n" + 
-		"</Style>\r\n" + 
-		"\r\n" + 
-		"\r\n" + 
-		"-<Style id=\"paddle-b\">\r\n" + 
-		"\r\n" + 
-		"\r\n" + 
-		"-<IconStyle>\r\n" + 
-		"\r\n" + 
-		"\r\n" + 
-		"+<Icon>\r\n" + 
-		"\r\n" + 
-		"<hotSpot yunits=\"pixels\" xunits=\"pixels\" y=\"1\" x=\"32\"/>\r\n" + 
-		"\r\n" + 
-		"</IconStyle>\r\n" + 
-		"\r\n" + 
-		"</Style>\r\n" + 
-		"\r\n" + 
-		"\r\n" + 
-		"-<Style id=\"hiker-icon\">\r\n" + 
-		"\r\n" + 
-		"\r\n" + 
-		"-<IconStyle>\r\n" + 
-		"\r\n" + 
-		"\r\n" + 
-		"-<Icon>\r\n" + 
-		"\r\n" + 
-		"<href>http://maps.google.com/mapfiles/ms/icons/hiker.png</href>\r\n" + 
-		"\r\n" + 
-		"</Icon>\r\n" + 
-		"\r\n" + 
-		"<hotSpot yunits=\"fraction\" xunits=\"fraction\" y=\".5\" x=\"0\"/>\r\n" + 
-		"\r\n" + 
-		"</IconStyle>\r\n" + 
-		"\r\n" + 
-		"</Style>\r\n" + 
-		"\r\n" + 
-		"\r\n" + 
-		"-<Style id=\"check-hide-children\">\r\n" + 
-		"\r\n" + 
-		"\r\n" + 
-		"-<ListStyle>\r\n" + 
-		"\r\n" + 
-		"<listItemType>checkHideChildren</listItemType>\r\n" + 
-		"\r\n" + 
-		"</ListStyle>\r\n" + 
-		"\r\n" + 
-		"</Style>\r\n" + 
-		"\r\n" + 
-		"<styleUrl>#check-hide-children</styleUrl>";
+		return "\r\n" + 
+		"<kml xmlns=\"http://earth.google.com/kml/2.2\">\r\n" + 
+		"  <Document>\r\n" + 
+		"    <name>Points with TimeStamps</name>\r\n" + 
+		"    <Style id=\"paddle-a\">\r\n" + 
+		"      <IconStyle>\r\n" + 
+		"        <Icon>\r\n" + 
+		"          <href>http://maps.google.com/mapfiles/kml/paddle/A.png</href>\r\n" + 
+		"        </Icon>\r\n" + 
+		"        <hotSpot x=\"32\" y=\"1\" xunits=\"pixels\" yunits=\"pixels\"/>\r\n" + 
+		"      </IconStyle>\r\n" + 
+		"    </Style>\r\n" + 
+		"    <Style id=\"paddle-b\">\r\n" + 
+		"      <IconStyle>\r\n" + 
+		"        <Icon>\r\n" + 
+		"          <href>http://maps.google.com/mapfiles/kml/paddle/B.png</href>\r\n" + 
+		"        </Icon>\r\n" + 
+		"        <hotSpot x=\"32\" y=\"1\" xunits=\"pixels\" yunits=\"pixels\"/>\r\n" + 
+		"      </IconStyle>\r\n" + 
+		"    </Style>\r\n" + 
+		"    <Style id=\"hiker-icon\">\r\n" + 
+		"      <IconStyle>\r\n" + 
+		"        <Icon>\r\n" + 
+		"          <href>http://maps.google.com/mapfiles/ms/icons/hiker.png</href>\r\n" + 
+		"        </Icon>\r\n" + 
+		"        <hotSpot x=\"0\" y=\".5\" xunits=\"fraction\" yunits=\"fraction\"/>\r\n" + 
+		"      </IconStyle>\r\n" + 
+		"    </Style>\r\n" + 
+		"    <Style id=\"check-hide-children\">\r\n" + 
+		"      <ListStyle>\r\n" + 
+		"        <listItemType>checkHideChildren</listItemType>\r\n" + 
+		"      </ListStyle>\r\n" + 
+		"    </Style>\r\n" + 
+		"    <styleUrl>#check-hide-children</styleUrl>\r\n" ;
+
 	}
 
 	public String AddBlock(String date,String coorndinate )
 	{
-		String ans = "\r\n" + 
-				"\r\n" + 
-				"\r\n" + 
-				"-<Placemark>\r\n" + 
-				"\r\n" + 
-				"\r\n" + 
-				"-<TimeStamp>\r\n" + 
-				"\r\n" + 
-				"<when>"+ date
-				+"</when>\r\n" + 
-				"\r\n" + 
-				"</TimeStamp>\r\n" + 
-				"\r\n" + 
-				"<styleUrl>#hiker-icon</styleUrl>\r\n" + 
-				"\r\n" + 
-				"\r\n" + 
-				"-<Point>\r\n" + 
-				"\r\n" + 
-				"<coordinates>"+coorndinate
-				+"</coordinates>\r\n" + 
-				"\r\n" + 
-				"</Point>\r\n" + 
-				"\r\n" + 
-				"</Placemark>";
+		String ans = 
+				"<Placemark>\r\n" + 
+						"      <TimeStamp>\r\n" + 
+						"        <when>"+date+"</when>\r\n" + 
+						"      </TimeStamp>\r\n" + 
+						"      <styleUrl>#hiker-icon</styleUrl>\r\n" + 
+						"      <Point>\r\n" + 
+						"        <coordinates>"+coorndinate+"</coordinates>\r\n" + 
+						"      </Point>\r\n" + 
+						"    </Placemark>\r\n" ; 
 
 		return ans;
 	}
@@ -214,7 +160,7 @@ public class KML_Logger {
 	public void AddLoop() throws IOException
 	{  
 		int size;
-		size = AutoGame.Robots.size();
+		size =AutoGame.Robots.size();
 		for(int i=0;i<size;i++)
 		{
 			String coorndinate= RobotLocToString(i);
@@ -266,40 +212,25 @@ public class KML_Logger {
 
 
 	public void  End(boolean delete) throws IOException {
-		writer.write("\r\n" + 
-				"</Document>\r\n" + 
-				"\r\n" + 
-				"</kml>");
-	 if(delete) file.delete();
+		writer.write(" </Document>\r\n" + "</kml>" );
+		
+		if(delete==true) file.delete();
+
+		 
 	}
 
-	//public File file()
-	//{ File file = new File("output.kml");
-	////Create the file
-	//try {
-	//	if (file.createNewFile())
-	//	{
-	//		System.out.println("File is created!");
-	//	} else {
-	//		System.out.println("File already exists.");
-	//	}
-	//} catch (IOException e1) {
-	//	// TODO Auto-generated catch block
-	//	e1.printStackTrace();
-	//}
-	// return file;//Write Content
-	//}
-
+	
 	public String Date()
 	{   String ans;  
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		LocalDateTime now = LocalDateTime.now();  
+	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	LocalDateTime now = LocalDateTime.now();  
 
-		DateTimeFormatter dtf2=	DateTimeFormatter.ofPattern ("HH:mm:ss");  
-		LocalDateTime now2 = LocalDateTime.now();  
+	//		DateTimeFormatter dtf2=	DateTimeFormatter.ofPattern ("HH:mm:ss");  
+	//		LocalDateTime now2 = LocalDateTime.now();  
 
-		ans=now+"T"+now2+"Z";
-		return (ans) ;
+	ans=""+now ;
+	System.out.println(ans);
+	return (ans) ;
 
 
 

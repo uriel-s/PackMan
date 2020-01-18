@@ -58,7 +58,7 @@ import utils.*;
 
 
 
-public class AutoGame implements Runnable
+public class AutoGame implements Runnable,Packmen_game
 
 {
 	static DGraph gr;
@@ -392,6 +392,7 @@ public class AutoGame implements Runnable
 
 	}
 
+	
 	public Point3D getloc (String s)
 	{
 		String[] locations = s.split(",");
@@ -405,7 +406,6 @@ public class AutoGame implements Runnable
 	public void startGameGUI() throws JSONException, IOException{
 		locateRobots();
 		game.startGame();
-		System.out.println("robot located");
 		while(game.isRunning()) {
 			kml.AddLoop();
 			StdDraw.enableDoubleBuffering();
@@ -425,7 +425,7 @@ public class AutoGame implements Runnable
 			StdDraw.show();
 
 		}
-		kml.End(delete);
+		kml.End(true);
 	}
 
 	private static void FindClosestFruit(robot r)
@@ -516,7 +516,7 @@ public class AutoGame implements Runnable
 			Dedge edge =(Dedge) fruit.getEdge();
 			int min = Math.min( edge.getDest()  ,edge.getSrc() );
 			int max = Math.max( edge.getDest()  ,edge.getSrc() );
-			fruit.setUnderTarget(true);
+			fruit.setUnderTarget(false);
 
 			int temp;
 			if(fruit.getType() == -1) {
