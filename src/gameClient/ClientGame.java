@@ -61,7 +61,7 @@ import utils.*;
  */
 
 
-public class ClientGame implements Runnable
+public class ClientGame implements Runnable// , Packmen_game
 
 {
 	static DGraph gr;
@@ -70,15 +70,16 @@ public class ClientGame implements Runnable
 	public static ArrayList<Fruit> fruitA = new ArrayList<>();
 	public static ArrayList<robot> Robots = new ArrayList<>();
 	public KML_Logger kml;
-
+    
+	
+	// constructor
 	public ClientGame() throws JSONException, IOException
 	{
 		kml= new KML_Logger();
-		fruitA.clear();
-	
+		fruitA.clear();     // clear the static fruit list before every new game/level
 		ClientGame.gr=new DGraph();
 		String g = choose_level();
-		gr.init(g);
+		gr.init(g);        // init the graph from json string info
 		set_scale(game);
 		paint();
 		PaintFruits();
@@ -86,7 +87,11 @@ public class ClientGame implements Runnable
 		run();
 	}
 
-
+    /**
+     * 
+     * @return the score collected so far in the game
+     * @throws JSONException
+     */
 	public int FindGrade() throws JSONException {
 		String info = game.toString();
 		JSONObject line;
@@ -136,7 +141,9 @@ public class ClientGame implements Runnable
 
 	}
 
-	//open the stddraw window and draw the graph
+	/**
+	 * open the stddraw window and draw the graph
+	 */
 	public void paint() {
 
 		Collection<node_data> search = gr.getV();
@@ -229,14 +236,17 @@ public class ClientGame implements Runnable
 				String pos = ttt.getString("pos");
 				Point3D p= getloc(pos);
 
-				Fruit f = new Fruit(type,value,p);
+				Fruit f = new Fruit(type,value,p);   // build the fruit object from json info
                  fruitA.add(f);
+                 
+                 //yellow represent a banana
 				if(f.getType()==-1) {
 					StdDraw.setPenColor(Color.YELLOW);
 					StdDraw.setPenRadius(0.03);
 					StdDraw.point(f.getPos().x(), f.getPos().y());
 
 				}
+				// red represent an apple
 				if(f.getType()==1) {
 					StdDraw.setPenColor(Color.RED);
 					StdDraw.setPenRadius(0.03);
@@ -271,8 +281,9 @@ public class ClientGame implements Runnable
 			}
 
 		}
-		PaintRobots();
+		PaintRobots();   
 	}
+	
 	/**
 	 * paint the robots locations on the graph
 	 * @throws JSONException
@@ -306,7 +317,11 @@ public class ClientGame implements Runnable
 		}
 
 	}
-    
+    /**
+     * 
+     * @param s - a string represent point3D
+     * @return  point3D
+     */
 	public Point3D getloc (String s)
 	{
 		String[] locations = s.split(",");
@@ -316,7 +331,10 @@ public class ClientGame implements Runnable
 		Point3D p = new Point3D(x,y,z);
 		return p;
 	}
-
+   /**
+    * start the game
+    * @throws JSONException
+    */
 	public void startGameGUI() throws JSONException{
 		locateRobots();
 		game.startGame();
@@ -344,7 +362,12 @@ public class ClientGame implements Runnable
 
 
 
-
+/**
+ * this function taking the needes info from the game server string.
+ *  and using NextNode function to move all the Robots one step.
+ * @param game
+ * @param gg
+ */
 	private static void moveRobots(game_service game, graph gg) {
 		List<String> log = game.move();
 		if(log!=null) {
@@ -361,8 +384,8 @@ public class ClientGame implements Runnable
 					if(dest==-1) {
 						dest = nextNode(gg, src);
 						game.chooseNextEdge(rid, dest);
-						System.out.println("Turn to node: "+dest+"  time to end:"+(t/1000));
-						System.out.println(ttt);
+						//System.out.println("Turn to node: "+dest+"  time to end:"+(t/1000));
+						//System.out.println(ttt);
 					}
 				}
 				catch (JSONException e) {e.printStackTrace();}

@@ -57,8 +57,13 @@ import jdk.internal.org.objectweb.asm.tree.analysis.Value;
 import utils.*;
 
 
-
-public class AutoGame implements Runnable,Packmen_game
+/**
+ * this class represent a gui for automatic game 
+ * using algorithms to choose the movment of the robots
+ * @author Yair
+ *
+ */
+public class AutoGame implements Runnable
 
 {
 	static DGraph gr;
@@ -68,21 +73,24 @@ public class AutoGame implements Runnable,Packmen_game
 	public static ArrayList<robot> Robots = new ArrayList<>();
 	public KML_Logger kml;
 	boolean delete;
+
+	//constructor
 	public AutoGame() throws JSONException, IOException
 	{
-		
+
 		fruitA.clear();
 		AutoGame.gr=new DGraph();
 		kml= new KML_Logger();
 		String g = choose_level();
-	System.out.println(game.toString());
+		//System.out.println(game.toString());
 		gr.init(g);
-
 		set_scale(game);
 		paint();
 		PaintFruits();
 		PaintRobots();
 		run();
+		String results = game.toString();
+		System.out.println("Game Over: "+results);
 	}
 
 	/**
@@ -139,7 +147,9 @@ public class AutoGame implements Runnable,Packmen_game
 
 	}
 
-	//open the stddraw window and draw the graph
+	/**
+	 * open the stddraw window and draw the graph
+	 */
 	public void paint() {
 
 		Collection<node_data> search = gr.getV();
@@ -285,7 +295,10 @@ public class AutoGame implements Runnable,Packmen_game
 
 
 
-
+	/**
+	 * 
+	 * @return
+	 */
 	private static Fruit findFruit() {
 		Collection<node_data> search = gr.getV();
 		for(Fruit fruit : fruitA) {
@@ -407,13 +420,16 @@ public class AutoGame implements Runnable,Packmen_game
 		locateRobots();
 		game.startGame();
 		while(game.isRunning()) {
-			kml.AddLoop();
+		
 			StdDraw.enableDoubleBuffering();
 			StdDraw.clear();
 			moveRobots(game, gr);
+			if(game.timeToEnd()%200==0) kml.AddLoop();
+
 			paint();
 			PaintFruits();
 			PaintRobots();
+
 			int grade=FindGrade();
 			long t = game.timeToEnd();
 
@@ -425,7 +441,7 @@ public class AutoGame implements Runnable,Packmen_game
 			StdDraw.show();
 
 		}
-		kml.End(true);
+		kml.End();
 	}
 
 	private static void FindClosestFruit(robot r)
@@ -460,8 +476,13 @@ public class AutoGame implements Runnable,Packmen_game
 	}
 
 
-
+     /**
+      * move the robots. choosing the next node for each robot
+      * @param game
+      * @param gg
+      */
 	private static void moveRobots(game_service game, graph gg) {
+
 		for(Fruit fruit : fruitA) {
 			fruit.setUnderTarget(false);
 		}
@@ -485,15 +506,16 @@ public class AutoGame implements Runnable,Packmen_game
 						r.setSrc(src);
 
 						if(r.ShortWay.size()==1  || r.ShortWay.size()==0) {
+							// send the robot i to build a new short way list to next node for it
 							nextNode(i,gg, src);
 						}
-						System.out.println(r.ShortWay);
+						//System.out.println(r.ShortWay);
 						if(r.ShortWay.size()>1)
 							dest=r.ShortWay.get(1).getKey();
 						game.chooseNextEdge(rid, dest);
 						r.ShortWay.remove(0);
-						System.out.println("Turn to node: "+dest+"  time to end:"+(t/1000));
-						System.out.println(ttt);
+						//System.out.println("Turn to node: "+dest+"  time to end:"+(t/1000));
+						//System.out.println(ttt);
 					}
 				}
 				catch (JSONException e) {e.printStackTrace();}
@@ -501,7 +523,8 @@ public class AutoGame implements Runnable,Packmen_game
 		}
 	}
 	/**
-	 * this algo coose thennext node the robot will torn to
+	 * this algo choose the next node the robot will torn to
+	 * using the shortest path algorithm
 	 * @param g
 	 * @param src
 	 * @return
@@ -522,7 +545,7 @@ public class AutoGame implements Runnable,Packmen_game
 			if(fruit.getType() == -1) {
 				dest= min;
 				temp = max;
-			}else {
+			} else {
 				dest = max ;
 				temp = min;
 			}
