@@ -1,5 +1,7 @@
 hello and welcome to our project!
 
+this project is based on our last project with you can see here : https://github.com/YairAn/Ex2.git
+
 our project include a game of robots collecting fruits(apples/bananas) and gain scores.
 
 there are 24 levels in the game.
