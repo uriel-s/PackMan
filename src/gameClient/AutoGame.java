@@ -405,7 +405,7 @@ public class AutoGame implements Runnable
 
 	}
 
-	
+
 	public Point3D getloc (String s)
 	{
 		String[] locations = s.split(",");
@@ -419,12 +419,17 @@ public class AutoGame implements Runnable
 	public void startGameGUI() throws JSONException, IOException{
 		locateRobots();
 		game.startGame();
+		int i=0;
 		while(game.isRunning()) {
-		
+
 			StdDraw.enableDoubleBuffering();
 			StdDraw.clear();
 			moveRobots(game, gr);
-			if(game.timeToEnd()%200==0) kml.AddLoop();
+			i++;
+			if( i==300) 
+			{    kml.AddLoop();
+			i=0;
+			}
 
 			paint();
 			PaintFruits();
@@ -441,6 +446,7 @@ public class AutoGame implements Runnable
 			StdDraw.show();
 
 		}
+		System.out.println("the end");
 		kml.End();
 	}
 
@@ -476,11 +482,11 @@ public class AutoGame implements Runnable
 	}
 
 
-     /**
-      * move the robots. choosing the next node for each robot
-      * @param game
-      * @param gg
-      */
+	/**
+	 * move the robots. choosing the next node for each robot
+	 * @param game
+	 * @param gg
+	 */
 	private static void moveRobots(game_service game, graph gg) {
 
 		for(Fruit fruit : fruitA) {

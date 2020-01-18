@@ -75,7 +75,7 @@ public class KML_Logger {
 
 	public KML_Logger() throws JSONException, IOException
 	{
-		file  = new File("realfinal.kml");
+		file  = new File("darmon.kml");
 		writer = new FileWriter(file);
 
 		//Create the file
@@ -143,8 +143,7 @@ public class KML_Logger {
 
 	public String AddBlock(String date,String coorndinate )
 	{
-		String ans = 
-				"<Placemark>\r\n" + 
+		String ans = "<Placemark>\r\n" + 
 						"      <TimeStamp>\r\n" + 
 						"        <when>"+date+"</when>\r\n" + 
 						"      </TimeStamp>\r\n" + 
@@ -211,10 +210,13 @@ public class KML_Logger {
 	}
 
 
-	public void  End(boolean delete) throws IOException {
-		writer.write(" </Document>\r\n" + "</kml>" );
+	public void  End() throws IOException {
 		
-		if(delete==true) file.delete();
+		
+		String end = "</Document>\r\n" + "</kml>" ;
+		writer.write(end);
+		System.out.println("the end2"	+ "");
+	//	if(delete==true) file.delete();
 
 		 
 	}
