@@ -48,7 +48,6 @@ public class AutoGame implements Runnable
 	boolean delete;
 	static int counter =0;
 	private Thread t;
-	private Thread t;
     private static long time;
     
     
@@ -469,8 +468,9 @@ public class AutoGame implements Runnable
 	 * @param game
 	 * @param gg
 	 * @throws IOException 
+	 * @throws InterruptedException 
 	 */
-	private  void moveRobots(game_service game, graph gg) throws IOException {
+	private  void moveRobots(game_service game, graph gg) throws IOException, InterruptedException {
 
 		for(Fruit fruit : fruitA) {
 			fruit.setUnderTarget(false);
