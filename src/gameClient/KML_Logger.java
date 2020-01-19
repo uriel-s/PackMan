@@ -214,9 +214,9 @@ public class KML_Logger {
 
 	public void  End() throws IOException {
 
+		kmlStr.append("</Document>\r\n" + "</kml>") ;
 
 		writer.write(kmlStr+"");
-		kmlStr.append("</Document>\r\n" + "</kml>") ;
 		System.out.println("the end2"	+ "");
 		//	if(delete==true) file.delete();
 

@@ -430,7 +430,7 @@ public class AutoGame implements Runnable
 			{    kml.AddLoop();
 			i=0;
 			}
-		//	kml.writer.write("amichai");
+		 kml.writer.write("amichai");
 
 			paint();
 			PaintFruits();
