@@ -71,13 +71,14 @@ public class KML_Logger {
 	public File file;
 	//public AutoGame AG;
 	//public MyGameGUI myGG;
+	public static StringBuffer kmlStr;
 
 
 	public KML_Logger() throws JSONException, IOException
 	{
-		file  = new File("darmon.kml");
+		kmlStr = new StringBuffer();
+		file  = new File("amichai2.kml");
 		writer = new FileWriter(file);
-
 		//Create the file
 		try {
 			if (file.createNewFile())
@@ -144,14 +145,14 @@ public class KML_Logger {
 	public String AddBlock(String date,String coorndinate )
 	{
 		String ans = "<Placemark>\r\n" + 
-						"      <TimeStamp>\r\n" + 
-						"        <when>"+date+"</when>\r\n" + 
-						"      </TimeStamp>\r\n" + 
-						"      <styleUrl>#hiker-icon</styleUrl>\r\n" + 
-						"      <Point>\r\n" + 
-						"        <coordinates>"+coorndinate+"</coordinates>\r\n" + 
-						"      </Point>\r\n" + 
-						"    </Placemark>\r\n" ; 
+				"      <TimeStamp>\r\n" + 
+				"        <when>"+date+"</when>\r\n" + 
+				"      </TimeStamp>\r\n" + 
+				"      <styleUrl>#hiker-icon</styleUrl>\r\n" + 
+				"      <Point>\r\n" + 
+				"        <coordinates>"+coorndinate+"</coordinates>\r\n" + 
+				"      </Point>\r\n" + 
+				"    </Placemark>\r\n" ; 
 
 		return ans;
 	}
@@ -165,7 +166,8 @@ public class KML_Logger {
 			String coorndinate= RobotLocToString(i);
 			String date = Date();
 			String block =AddBlock(date, coorndinate);
-			writer.write( block);
+			kmlStr.append(block);
+			//			writer.write( block);
 			//System.out.print(block);
 		}
 		size=AutoGame.fruitA.size()		;
@@ -174,7 +176,7 @@ public class KML_Logger {
 			String coorndinate= FruitLocToString(i);
 			String date = Date();
 			String block =AddBlock(date, coorndinate);
-			writer.write( block);
+			kmlStr.append(block);
 			//System.out.print(block);
 
 		}
@@ -211,17 +213,17 @@ public class KML_Logger {
 
 
 	public void  End() throws IOException {
-		
-		
-		String end = "</Document>\r\n" + "</kml>" ;
-		writer.write(end);
-		System.out.println("the end2"	+ "");
-	//	if(delete==true) file.delete();
 
-		 
+
+		writer.write(kmlStr+"");
+		kmlStr.append("</Document>\r\n" + "</kml>") ;
+		System.out.println("the end2"	+ "");
+		//	if(delete==true) file.delete();
+
+
 	}
 
-	
+
 	public String Date()
 	{   String ans;  
 	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");

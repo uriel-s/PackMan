@@ -426,10 +426,11 @@ public class AutoGame implements Runnable
 			StdDraw.clear();
 			moveRobots(game, gr);
 			i++;
-			if( i==300) 
+			if( i==3500) 
 			{    kml.AddLoop();
 			i=0;
 			}
+		//	kml.writer.write("amichai");
 
 			paint();
 			PaintFruits();
@@ -448,6 +449,7 @@ public class AutoGame implements Runnable
 		}
 		System.out.println("the end");
 		kml.End();
+
 	}
 
 	private static void FindClosestFruit(robot r)
