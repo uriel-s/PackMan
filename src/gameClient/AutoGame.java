@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.css.Counter;
 
 import Server.Game_Server;
 import Server.game_service;
@@ -45,6 +46,7 @@ public class AutoGame implements Runnable
 	public static ArrayList<robot> Robots = new ArrayList<>();
 	public KML_Logger kml;
 	boolean delete;
+	static int counter =0;
 	private Thread t;
     private static long time;
     
@@ -215,6 +217,7 @@ public class AutoGame implements Runnable
 				String pos = ttt.getString("pos");
 				Point3D p= getloc(pos);
 				Fruit f = new Fruit(type,value,p);
+				kml.AddFruit(f);
 
 				fruitA.add(f);
 				// -1 indicates a banana
@@ -366,6 +369,7 @@ public class AutoGame implements Runnable
 				Point3D p= getloc(pos);
 				robot r = new robot( id,  speed,  src,  dest, p, value);
 				Robots.add(r);
+				kml.AddRobot(r);
 				StdDraw.setPenColor(Color.black);
 				StdDraw.setPenRadius(0.03);
 				StdDraw.picture(r.getPos().x(), r.getPos().y(),"ice.png",0.0005,0.0005);
@@ -399,12 +403,10 @@ public class AutoGame implements Runnable
 			StdDraw.enableDoubleBuffering();
 			StdDraw.clear();
 			moveRobots(game, gr);
-			i++;
-			if( i==350000) 
-			{    kml.AddLoop();
-			i=0;
-			}
-			//	kml.writer.write("amichai");
+			//			if( i==3500) 
+			//			{    kml.AddLoop();
+			//			i=0;
+			//			}
 
 			paint();
 			PaintFruits();
@@ -465,9 +467,10 @@ public class AutoGame implements Runnable
 	 * move the robots. choosing the next node for each robot
 	 * @param game
 	 * @param gg
+	 * @throws IOException 
 	 * @throws InterruptedException 
 	 */
-	private static void moveRobots(game_service game, graph gg) throws InterruptedException {
+	private  void moveRobots(game_service game, graph gg) throws IOException, InterruptedException {
 
 		for(Fruit fruit : fruitA) {
 			fruit.setUnderTarget(false);
@@ -479,6 +482,9 @@ public class AutoGame implements Runnable
 		List<String> log = game.move();
 		if(log!=null) {
 			//long t = game.timeToEnd();
+			long t = game.timeToEnd();
+			
+			  
 			for(int i=0;i<log.size();i++) {
 				String robot_json = log.get(i);
 				try {
@@ -494,6 +500,7 @@ public class AutoGame implements Runnable
 						robot r = Robots.get(i);
 						r.setSrc(src);
 
+						
 						if(r.ShortWay.size()==1  || r.ShortWay.size()==0) {
 							// send the robot i to build a new short way list to next node for it
 							nextNode(i,gg, src);

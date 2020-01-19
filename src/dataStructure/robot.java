@@ -15,6 +15,12 @@ public class robot {
 	public List<node_data > ShortWay ;
 	public Fruit fruit  ;
 	
+	public robot ()
+	{
+		this.ShortWay= new ArrayList<node_data>();
+	}
+	
+	
 	
 	public robot(int id, int speed, int src, int dest, Point3D pos, double value) {
 		this.id = id;

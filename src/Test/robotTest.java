@@ -16,7 +16,6 @@ import Server.Game_Server;
 import Server.game_service;
 
 class robotTest  {
-static String JSONSTRING = "{\"Robot\":{\"id\":0,\"value\":1,\"src\":1,\"dest\":10,\"speed\":1,\"pos\":\"35.4,32.3,0.0\"}}";
 
 	@Test
 	void testRobot() throws JSONException {
@@ -26,22 +25,52 @@ static String JSONSTRING = "{\"Robot\":{\"id\":0,\"value\":1,\"src\":1,\"dest\":
 		JSONObject t = line.getJSONObject("GameServer");
 		int rs = t.getInt("robots");
 		assertEquals(rs, 3);
-				
+
+
+	}
+
+
+	@Test
+	public void robot() 
+	{	//			robot r = new robot( id,  speed,  src,  dest, p, value);
+Point3D pos= new Point3D(12.5, 15);
+int id=0;
+int speed =3;
+int src=0;
+int dest=15;
+double value=200; 
+
+robot  r = new robot( id,  speed,  src,  dest, pos, value);
+	assertEquals(0,r.getSrc());
+	assertEquals(0,r.getId());
+	assertEquals(200,r.getValue(),0.001);
+	assertEquals(15,r.getDest());
+	assertEquals(pos,r.getPos());
+
+	}
+
+
+	public void setId() {
+		robot r1 = new robot();
+		robot r2 = new robot();
+		r1.setId(1);
+		r2.setId(2);
+		assertEquals(2,r2.getId());
+		assertEquals(1,r1.getId());
+	}
+
+	@Test
+	public void getId() {
+		robot r1 = new robot();
+		robot r2 = new robot();
+		r1.setId(1);
+		r2.setId(2);
+		assertEquals(2,r2.getId());
+		assertEquals(1,r1.getId());
 	}
 
 	
-	@Test
-	 public void robot() 
-	 {
-		Point3D p = new Point3D(23.4, 12) ;
-		robot  r = new robot(0, 1, 1, 10, p, 1);
-		assertEquals(1,r.getSrc());
-        assertEquals(0,r.getId());
-        assertEquals(1,r.getValue(),0.001);
-        assertEquals(10,r.getDest());
-        assertEquals(p,r.getPos());
-		
-	 }
+
 
 
 
