@@ -78,6 +78,7 @@ public class KML_Logger {
 	{
 		kmlStr = new StringBuffer();
 		file  = new File("0.kml");
+		file  = new File("uriel.kml");
 		writer = new FileWriter(file);
 		//Create the file
 		try {
@@ -214,13 +215,16 @@ public class KML_Logger {
 
 	public void  End() throws IOException {
 
+		kmlStr.append("</Document>\r\n" + "</kml>") ;
 
 		writer.write(kmlStr+"");
+
 		kmlStr.append("</Document>\r\n" + "</kml>") ;
 		writer.flush();
 		writer.close();
 
 		System.out.println("the end2"	+ "");
+		System.out.println("the end2");
 		//	if(delete==true) file.delete();
 
 
