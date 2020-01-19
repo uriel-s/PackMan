@@ -272,15 +272,13 @@ Iterator<DNode> I = (Iterator<DNode>) AutoGame.gr.getVErtex();
 
 
 	public String Date()
-	{   String ans;  
+	{ 
+		String ans;  
 	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	LocalDateTime now = LocalDateTime.now();  
 
-	//		DateTimeFormatter dtf2=	DateTimeFormatter.ofPattern ("HH:mm:ss");  
-	//		LocalDateTime now2 = LocalDateTime.now();  
-
+	
 	ans=""+now ;
-	//System.out.println(ans);
 	return (ans) ;
 
 
