@@ -263,7 +263,7 @@ Iterator<DNode> I = (Iterator<DNode>) AutoGame.gr.getVErtex();
 		System.out.println("the end2");
 		//	if(delete==true) file.delete();
 	
-		    BufferedWriter writer = new BufferedWriter(new FileWriter("uriel+ben=love.kml"));
+		    BufferedWriter writer = new BufferedWriter(new FileWriter("23.kml"));
 		    writer.write(KMLstring);
 		     
 		    writer.close();
