@@ -1,62 +1,34 @@
 package gameClient;
 
 
-import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Menu;
-import java.awt.MenuBar;
-import java.awt.MenuItem;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.filechooser.FileSystemView;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.css.Counter;
 
-import com.google.gson.JsonObject;
-
 import Server.Game_Server;
 import Server.game_service;
-
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.Timer;
-
-import algorithms.*;
-import dataStructure.*;
-import jdk.internal.org.objectweb.asm.tree.analysis.Value;
-import utils.*;
-
+import algorithms.Graph_Algo;
+import dataStructure.DGraph;
+import dataStructure.DNode;
+import dataStructure.Dedge;
+import dataStructure.Fruit;
+import dataStructure.edge_data;
+import dataStructure.graph;
+import dataStructure.node_data;
+import dataStructure.robot;
+import utils.Point3D;
+import utils.StdDraw;
+import java.util.Date;
 
 /**
  * this class represent a gui for automatic game 
@@ -76,10 +48,13 @@ public class AutoGame implements Runnable
 	boolean delete;
 	static int counter =0;
 	private Thread t;
+	private Thread t;
+    private static long time;
+    
+    
 	//constructor
 	public AutoGame() throws JSONException, IOException
 	{
-
 		fruitA.clear();
 		AutoGame.gr=new DGraph();
 		kml= new KML_Logger();
@@ -92,8 +67,7 @@ public class AutoGame implements Runnable
 		PaintRobots();
 		t = new Thread(this);
 		t.start();
-		System.out.println("the end 3");
-
+		
 	}
 
 	/**
@@ -308,18 +282,18 @@ public class AutoGame implements Runnable
 	private static Fruit findFruit() {
 		Collection<node_data> search = gr.getV();
 		for(Fruit fruit : fruitA) {
+			if(fruit.isUnderTarget() == false) {
 
-			for (node_data d : search) {
-				int k = d.getKey();
+				for (node_data d : search) {
+					int k = d.getKey();
 
-				for(edge_data e : gr.getE(k)) {
-					DNode src = (DNode) gr.getNode(e.getSrc());
-					DNode dst = (DNode) gr.getNode(e.getDest());
+					for(edge_data e : gr.getE(k)) {
+						DNode src = (DNode) gr.getNode(e.getSrc());
+						DNode dst = (DNode) gr.getNode(e.getDest());
 
-					double SrcToDSt = src.getLocation().distance2D(dst.getLocation());
+						double SrcToDSt = src.getLocation().distance2D(dst.getLocation());
 
-					//System.out.println("fruit :"+ fruit.getValue()+ " underTarget = "+fruit.isUnderTarget());                       
-					if(fruit.isUnderTarget() == false) {
+						//System.out.println("fruit :"+ fruit.getValue()+ " underTarget = "+fruit.isUnderTarget());                       
 
 						double src2fruit = src.getLocation().distance2D(fruit.getPos());
 						double fruit2dest = fruit.getPos().distance2D(dst.getLocation());
@@ -337,7 +311,6 @@ public class AutoGame implements Runnable
 
 			}
 		}
-
 		return null;
 	}
 
@@ -351,15 +324,14 @@ public class AutoGame implements Runnable
 		JSONObject line;
 		line = new JSONObject(game.toString());
 		JSONObject t = line.getJSONObject("GameServer");
-		int rs = t.getInt("robots");
-		System.out.println(rs);
-		for(int i = 0 ; i< rs ; i++) {
+		int rs = t.getInt("robots");   // get the number of robots
+		for(int i = 0 ; i < rs ; i++) {
 			try {
 				int Bestp ;
 				Fruit fruit= findFruit();
-				if (fruit==null) System.out.println("this fruit is NULL!!!");
+				//if (fruit==null) System.out.println("this fruit is NULL!!!");
 				Dedge edge =(Dedge) fruit.getEdge();
-				if (edge==null) System.out.println("this edge is NULL!!!");
+				//if (edge==null) System.out.println("this edge is NULL!!!");
 
 				int min = Math.min( edge.getDest()  ,edge.getSrc() );
 				int max = Math.max( edge.getDest()  ,edge.getSrc() );
@@ -422,10 +394,11 @@ public class AutoGame implements Runnable
 		return p;
 	}
 
-	public void startGameGUI() throws JSONException, IOException{
+	public void startGameGUI() throws JSONException, IOException, InterruptedException{
 		locateRobots();
 		game.startGame();
-		  
+		time =game.timeToEnd();
+		int i=0;
 		while(game.isRunning()) {
 
 			StdDraw.enableDoubleBuffering();
@@ -440,7 +413,7 @@ public class AutoGame implements Runnable
 			PaintFruits();
 			PaintRobots();
 
-			int grade=FindGrade();
+			int grade = FindGrade();
 			long t = game.timeToEnd();
 
 			String TimeLeft = "Time to end : " + t;
@@ -448,44 +421,47 @@ public class AutoGame implements Runnable
 
 			StdDraw.text((scaleParams[0]+scaleParams[2])/2,scaleParams[1]+0.001 , TimeLeft);
 			StdDraw.text((scaleParams[0]+scaleParams[2])/2,scaleParams[1]+0.0005 , Score);
+
 			StdDraw.show();
 
 		}
+
 		System.out.println("the end");
 		kml.End();
 
 	}
 
-	private static void FindClosestFruit(robot r)
-	{  
-		findFruit();
-		Graph_Algo ag= new Graph_Algo(gr);
-		double MinDis=Double.MAX_VALUE;
-		int x;
-		List<node_data > ShortWay =r.ShortWay;
-
-		for(Fruit fruit : fruitA) {
-			if (fruit.getEdge()!=null && !fruit.isUnderTarget()) {
-				edge_data edge = fruit.getEdge();
-				int min = Math.min( edge.getDest()  ,edge.getSrc() );
-				int max = Math.max( edge.getDest()  ,edge.getSrc() );
-				if(fruit.getType() == 1)	x= min;
-				else	x= max;
-
-
-				DNode n = (DNode) gr.getNode(x);    
-				List<node_data > tmp = ag.shortestPath(r.getSrc(), x);
-				if( tmp.size() <MinDis ) {
-					MinDis =  tmp.size();
-					ShortWay=tmp;
-					fruit.setUnderTarget(true);
-				}
-
-			}
-		}
-		r.ShortWay=ShortWay;
-
-	}
+	//	private static void FindClosestFruit(robot r)
+	//	{  
+	//		findFruit();
+	//		Graph_Algo ag= new Graph_Algo(gr);
+	//		double MinDis=Double.MAX_VALUE;
+	//		int x;
+	//		List<node_data > ShortWay =r.ShortWay;
+	//
+	//		for(Fruit fruit : fruitA) {
+	//			if (fruit.getEdge()!=null && !fruit.isUnderTarget()) {
+	//				edge_data edge = fruit.getEdge();
+	//				int min = Math.min( edge.getDest()  ,edge.getSrc() );
+	//				int max = Math.max( edge.getDest()  ,edge.getSrc() );
+	//				if(fruit.getType() == 1)	x= min;
+	//				else	x= max;
+	//
+	//
+	//				DNode n = (DNode) gr.getNode(x);    
+	//				List<node_data > tmp = ag.shortestPath(r.getSrc(), x);
+	//				if( tmp.size() <MinDis ) {
+	//					MinDis =  tmp.size();
+	//					ShortWay=tmp;
+	//					fruit.setUnderTarget(true);
+	//
+	//				}
+	//
+	//			}
+	//		}
+	//		r.ShortWay=ShortWay;
+	//
+	//	}
 
 
 	/**
@@ -499,7 +475,12 @@ public class AutoGame implements Runnable
 		for(Fruit fruit : fruitA) {
 			fruit.setUnderTarget(false);
 		}
-
+		//        for(robot robot : Robots) {
+		//        	
+		//        }
+		long tmp = game.timeToEnd();
+		if(Math.abs(time-tmp)>100) {
+			time = tmp;
 		List<String> log = game.move();
 		if(log!=null) {
 			long t = game.timeToEnd();
@@ -517,7 +498,7 @@ public class AutoGame implements Runnable
 
 					if(dest==-1) {
 
-						robot r =Robots.get(i);
+						robot r = Robots.get(i);
 						r.setSrc(src);
 
 						
@@ -534,28 +515,32 @@ public class AutoGame implements Runnable
 						//System.out.println(ttt);
 					}
 				}
+			
 				catch (JSONException e) {e.printStackTrace();}
 			}
 		}
+		}
 	}
 	/**
-	 * this algo choose the next node the robot will torn to
+	 * this algorithm choose the next node the robot will torn to
 	 * using the shortest path algorithm
 	 * @param g
 	 * @param src
 	 * @return
+	 * @throws InterruptedException 
 	 */
-	private static void nextNode(int i,graph g, int src) {
+	private static void nextNode(int i,graph g, int src) throws InterruptedException {
 		robot r = Robots.get(i);
 		{
 			DNode n = new DNode();
 			int dest;
 			n=(DNode) gr.getNode(src);
 			Fruit fruit = findFruit();
+
 			Dedge edge =(Dedge) fruit.getEdge();
 			int min = Math.min( edge.getDest()  ,edge.getSrc() );
 			int max = Math.max( edge.getDest()  ,edge.getSrc() );
-			fruit.setUnderTarget(false);
+			//fruit.setUnderTarget(false);
 
 			int temp;
 			if(fruit.getType() == -1) {
@@ -584,10 +569,14 @@ public class AutoGame implements Runnable
 	public void run() {
 		try {
 			startGameGUI();
+			System.out.println(game.toString());
 		} 
 		catch (JSONException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
