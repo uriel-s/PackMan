@@ -379,7 +379,7 @@ public class AutoGame implements Runnable
 	}
 
 
-	public Point3D getloc (String s)
+	public static Point3D getloc (String s)
 	{
 		String[] locations = s.split(",");
 		double x = Double.parseDouble(locations[0]);
@@ -472,15 +472,13 @@ public class AutoGame implements Runnable
 		for(Fruit fruit : fruitA) {
 			fruit.setUnderTarget(false);
 		}
-		//        for(robot robot : Robots) {
-		//        	
-		//        }
+		
 		long tmp = game.timeToEnd();
 		if(Math.abs(time-tmp)>100) {
 			time = tmp;
 		List<String> log = game.move();
 		if(log!=null) {
-			long t = game.timeToEnd();
+			//long t = game.timeToEnd();
 			for(int i=0;i<log.size();i++) {
 				String robot_json = log.get(i);
 				try {
@@ -564,7 +562,8 @@ public class AutoGame implements Runnable
 		try {
 			startGameGUI();
 			System.out.println(game.toString());
-		} 
+		}
+		
 		catch (JSONException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
