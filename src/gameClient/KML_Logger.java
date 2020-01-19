@@ -77,7 +77,7 @@ public class KML_Logger {
 	public KML_Logger() throws JSONException, IOException
 	{
 		kmlStr = new StringBuffer();
-		file  = new File("amichai2.kml");
+		file  = new File("0.kml");
 		writer = new FileWriter(file);
 		//Create the file
 		try {
@@ -217,6 +217,9 @@ public class KML_Logger {
 
 		writer.write(kmlStr+"");
 		kmlStr.append("</Document>\r\n" + "</kml>") ;
+		writer.flush();
+		writer.close();
+
 		System.out.println("the end2"	+ "");
 		//	if(delete==true) file.delete();
 
