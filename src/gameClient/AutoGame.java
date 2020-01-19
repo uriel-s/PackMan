@@ -89,6 +89,8 @@ public class AutoGame implements Runnable
 		PaintFruits();
 		PaintRobots();
 		run();
+	System.out.println("the end 3");
+	
 	}
 
 	/**
@@ -361,7 +363,6 @@ public class AutoGame implements Runnable
 
 				if(fruit.getType() == 1)	Bestp= min;
 				else	Bestp= max;
-
 
 				game.addRobot(Bestp);
 			}
