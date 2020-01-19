@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -66,21 +67,22 @@ import org.json.JSONObject;
 import Server.game_service;
 
 public class KML_Logger {
-	public static String KMLstring;
-	public FileWriter writer;
+	public String KMLstring;
 	public File file;
+	public FileWriter writer;
+
 	//public AutoGame AG;
 	//public MyGameGUI myGG;
-	public static StringBuffer kmlStr;
+	//public static StringBuffer kmlStr;
 
 
 	public KML_Logger() throws JSONException, IOException
 	{
-		kmlStr = new StringBuffer();
-		file  = new File("uriel.kml");
-		writer = new FileWriter(file);
+		//kmlStr = new StringBuffer();
+	//	file  = new File("ben.kml");
+		//writer = new FileWriter(file);
 		//Create the file
-		try {
+/*		try {
 			if (file.createNewFile())
 			{
 				System.out.println("File is created!");
@@ -91,13 +93,13 @@ public class KML_Logger {
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}
+		}*/
 		//this.AG = ag;
 		//this.myGG = new MyGameGUI();
 		// AG.run();
 		System.out.println("new  kml");
 		KMLstring= startStr();
-		writer.write(KMLstring);
+		//		writer.write(KMLstring);
 
 
 
@@ -141,10 +143,36 @@ public class KML_Logger {
 		"    <styleUrl>#check-hide-children</styleUrl>\r\n" ;
 
 	}
+public  void addveretex() {
+Iterator<DNode> I = (Iterator<DNode>) AutoGame.gr.getVErtex();
+	while(I.hasNext()) 
+	{ DNode n = I.next();
+		String date =Date();
+		Point3D p = n.getLocation();
+		double x=p.x();
+		double y=p.y();
+		String pos="";
+		pos+=x+","+y;
+	KMLstring+=AddBlock(0, date, pos);
+	}
+} 
+	public String AddBlock( int type ,String date,String coorndinate )
+	{ String ans="";
+		//node
+		if (type == 0) {
+		 ans = "<Placemark>\r\n" + 
+				"      <TimeStamp>\r\n" + 
+				"        <when>"+date+"</when>\r\n" + 
+				"      </TimeStamp>\r\n" + 
+				"      <styleUrl>#paddle-a</styleUrl>\r\n" + 
+				"      <Point>\r\n" + 
+				"        <coordinates>"+coorndinate+"</coordinates>\r\n" + 
+				"      </Point>\r\n" + 
+				"    </Placemark>\r\n" ; }
 
-	public String AddBlock(String date,String coorndinate )
-	{
-		String ans = "<Placemark>\r\n" + 
+	//robot
+	if(type == 1) {
+		 ans = "<Placemark>\r\n" + 
 				"      <TimeStamp>\r\n" + 
 				"        <when>"+date+"</when>\r\n" + 
 				"      </TimeStamp>\r\n" + 
@@ -152,44 +180,59 @@ public class KML_Logger {
 				"      <Point>\r\n" + 
 				"        <coordinates>"+coorndinate+"</coordinates>\r\n" + 
 				"      </Point>\r\n" + 
-				"    </Placemark>\r\n" ; 
-
-		return ans;
+				"    </Placemark>\r\n" ; }
+	
+	
+	//fruit
+	if(type == 2) {
+		 ans = "<Placemark>\r\n" + 
+				"      <TimeStamp>\r\n" + 
+				"        <when>"+date+"</when>\r\n" + 
+				"      </TimeStamp>\r\n" + 
+				"      <styleUrl>#paddle-b</styleUrl>\r\n" + 
+				"      <Point>\r\n" + 
+				"        <coordinates>"+coorndinate+"</coordinates>\r\n" + 
+				"      </Point>\r\n" + 
+				"    </Placemark>\r\n" ; }
+	
+	
+	
+	return ans;
 	}
 
-	public void AddLoop() throws IOException
+	public void AddRobot(robot r) throws IOException
 	{  
-		int size;
-		size =AutoGame.Robots.size();
-		for(int i=0;i<size;i++)
-		{
-			String coorndinate= RobotLocToString(i);
+
+			String coorndinate= RobotLocToString(r);
 			String date = Date();
-			String block =AddBlock(date, coorndinate);
-			kmlStr.append(block);
-			//			writer.write( block);
+			String block =AddBlock(1,date, coorndinate);
+			//kmlStr.append(block);
 			//System.out.print(block);
+			//		writer.write( block);
+			KMLstring+= block;
 		}
-		size=AutoGame.fruitA.size()		;
-		for(int i=0;i<size;i++) 
+	
+	public void AddFruit(Fruit fruit) throws IOException
 		{
-			String coorndinate= FruitLocToString(i);
+			String coorndinate= FruitLocToString(fruit);
 			String date = Date();
-			String block =AddBlock(date, coorndinate);
-			kmlStr.append(block);
+			String block =AddBlock(2,date, coorndinate);
+			//kmlStr.append(block);
 			//System.out.print(block);
+			//writer.write( block);
+			KMLstring+= block;
 
 		}
 
-	}
 
 
 
 
 
-	public String FruitLocToString(int i)
+
+	public String FruitLocToString(Fruit fruit)
 	{
-		Point3D p=	AutoGame.fruitA.get(i).getPos();
+		Point3D p=	fruit.getPos();
 		double x=p.x();
 		double y=p.y();
 		String ans="";
@@ -200,10 +243,9 @@ public class KML_Logger {
 
 
 
-	public String RobotLocToString(int i)
-	{ 
-		//Packmen_game.Robots.get(i).getPos();
-		Point3D p= AutoGame.Robots.get(i).getPos();
+	public String RobotLocToString(robot r)
+	{    
+		Point3D p= r.getPos();
 		double x=p.x();
 		double y=p.y();
 		String ans="";
@@ -214,12 +256,17 @@ public class KML_Logger {
 
 	public void  End() throws IOException {
 
-		kmlStr.append("</Document>\r\n" + "</kml>") ;
+		//kmlStr.append("</Document>\r\n" + "</kml>") ;
 
-		writer.write(kmlStr+"");
+		//writer.write(kmlStr+"");
+		KMLstring +="</Document>\r\n" + "</kml>";
 		System.out.println("the end2");
 		//	if(delete==true) file.delete();
-
+	
+		    BufferedWriter writer = new BufferedWriter(new FileWriter("uriel+ben=love.kml"));
+		    writer.write(KMLstring);
+		     
+		    writer.close();
 
 	}
 
@@ -233,7 +280,7 @@ public class KML_Logger {
 	//		LocalDateTime now2 = LocalDateTime.now();  
 
 	ans=""+now ;
-	System.out.println(ans);
+	//System.out.println(ans);
 	return (ans) ;
 
 
