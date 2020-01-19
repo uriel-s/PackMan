@@ -89,8 +89,6 @@ public class AutoGame implements Runnable
 		PaintFruits();
 		PaintRobots();
 		run();
-		String results = game.toString();
-		System.out.println("Game Over: "+results);
 	}
 
 	/**
@@ -275,8 +273,10 @@ public class AutoGame implements Runnable
 	 * sort the list of fruits by value
 	 */
 	private void SortFruitsA() {
-
+        
 		int n = fruitA.size();
+		if(n<=1) return;
+		
 		for (int i = 0; i < n-1; i++) {
 			for (int j = 0; j < n-i-1; j++) {
 				if (fruitA.get(j).getValue() < fruitA.get(j+1).getValue()) 
@@ -296,7 +296,7 @@ public class AutoGame implements Runnable
 
 
 	/**
-	 * 
+	 * find what edges the fruit locate on
 	 * @return
 	 */
 	private static Fruit findFruit() {
