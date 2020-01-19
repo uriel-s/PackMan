@@ -405,6 +405,7 @@ public class AutoGame implements Runnable
 
 	}
 
+
 	public Point3D getloc (String s)
 	{
 		String[] locations = s.split(",");
@@ -418,11 +419,18 @@ public class AutoGame implements Runnable
 	public void startGameGUI() throws JSONException, IOException{
 		locateRobots();
 		game.startGame();
+		int i=0;
 		while(game.isRunning()) {
-			kml.AddLoop();
+
 			StdDraw.enableDoubleBuffering();
 			StdDraw.clear();
 			moveRobots(game, gr);
+			i++;
+			if( i==3500) 
+			{    kml.AddLoop();
+			i=0;
+			}
+		//	kml.writer.write("amichai");
 
 			paint();
 			PaintFruits();
@@ -439,7 +447,9 @@ public class AutoGame implements Runnable
 			StdDraw.show();
 
 		}
-		kml.End(delete);
+		System.out.println("the end");
+		kml.End();
+
 	}
 
 	private static void FindClosestFruit(robot r)
@@ -474,11 +484,11 @@ public class AutoGame implements Runnable
 	}
 
 
-     /**
-      * move the robots. choosing the next node for each robot
-      * @param game
-      * @param gg
-      */
+	/**
+	 * move the robots. choosing the next node for each robot
+	 * @param game
+	 * @param gg
+	 */
 	private static void moveRobots(game_service game, graph gg) {
 
 		for(Fruit fruit : fruitA) {
@@ -537,7 +547,7 @@ public class AutoGame implements Runnable
 			Dedge edge =(Dedge) fruit.getEdge();
 			int min = Math.min( edge.getDest()  ,edge.getSrc() );
 			int max = Math.max( edge.getDest()  ,edge.getSrc() );
-			fruit.setUnderTarget(true);
+			fruit.setUnderTarget(false);
 
 			int temp;
 			if(fruit.getType() == -1) {
