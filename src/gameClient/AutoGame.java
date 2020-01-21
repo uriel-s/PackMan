@@ -2,6 +2,8 @@ package gameClient;
 
 
 import java.awt.Color;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,6 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.css.Counter;
 
+import com.mysql.jdbc.Buffer;
 import com.sun.xml.internal.ws.api.pipe.FiberContextSwitchInterceptorFactory;
 
 import Server.Game_Server;
@@ -43,15 +46,17 @@ public class AutoGame implements Runnable
 
 {
 	static DGraph gr;
+	static int scenario_num;
 	public static game_service game;
 	double scaleParams [];
 	public static ArrayList<Fruit> fruitA = new ArrayList<>();
 	public static ArrayList<robot> Robots = new ArrayList<>();
 	public KML_Logger kml;
 	boolean delete;
-	static int counter =0;
+	//static int counter =0;
 	private Thread t;
 	private static long time;
+	static int count = 0;
 
 
 	//constructor
@@ -59,9 +64,8 @@ public class AutoGame implements Runnable
 	{
 		fruitA.clear();
 		AutoGame.gr=new DGraph();
-		kml= new KML_Logger();
 		String g = choose_level();
-		//System.out.println(game.toString());
+		kml= new KML_Logger();
 		gr.init(g);
 		set_scale(game);
 		paint();
@@ -189,7 +193,9 @@ public class AutoGame implements Runnable
 		try {
 			JFrame in = new JFrame();
 			String level = JOptionPane.showInputDialog(in,"choose a level [0-23]:");
-			int scenario_num =Integer.parseInt(level); 
+			 scenario_num =Integer.parseInt(level); 
+			int id = 311170476;
+			Game_Server.login(id);
 			this.game = Game_Server.getServer(scenario_num);
 			String g = this.game.getGraph();
 			return g;
@@ -220,7 +226,7 @@ public class AutoGame implements Runnable
 				String pos = ttt.getString("pos");
 				Point3D p= getloc(pos);
 				Fruit f = new Fruit(type,value,p);
-				kml.AddFruit(f);
+					kml.AddFruit(f);
 
 				fruitA.add(f);
 				// -1 indicates a banana
@@ -324,7 +330,7 @@ public class AutoGame implements Runnable
 		return fruitA.get(0);
 	}
 
-	
+
 	private Fruit  Node47to40(int i)
 	{
 		Dedge e= new Dedge();
@@ -343,9 +349,8 @@ public class AutoGame implements Runnable
 		}
 		return zero;
 	}
-	
-	
-	private Fruit  Node5to12(int i)
+
+	private Fruit  Node0to20(int i)
 	{
 		Dedge e= new Dedge();
 		e.setDest(10);
@@ -364,12 +369,12 @@ public class AutoGame implements Runnable
 		return zero;
 	}
 
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
 	private Fruit  Node0to14(int i)
 	{
 		Dedge e= new Dedge();
@@ -420,13 +425,9 @@ public class AutoGame implements Runnable
 		for(Fruit fruit : fruitA) {
 			fruit.setUnderTarget(false);
 		}
-
-
-
-
-
 		PaintRobots();
 	}
+	
 	private void PaintRobots() throws JSONException {
 		JSONObject line;
 		line = new JSONObject(game.toString());
@@ -473,17 +474,11 @@ public class AutoGame implements Runnable
 	public void startGameGUI() throws JSONException, IOException, InterruptedException{
 		locateRobots();
 		game.startGame();
-		time =game.timeToEnd();
-		int i=0;
+		time = game.timeToEnd();
 		while(game.isRunning()) {
 
 			StdDraw.enableDoubleBuffering();
 			StdDraw.clear();
-			//			if( i==3500) 
-			//			{    kml.AddLoop();
-			//			i=0;
-			//			}
-
 			paint();
 			PaintFruits();
 			PaintRobots();
@@ -503,7 +498,7 @@ public class AutoGame implements Runnable
 		}
 
 		System.out.println("the end");
-		kml.End();
+			kml.End();
 
 	}
 
@@ -539,7 +534,7 @@ public class AutoGame implements Runnable
 	return ans; 
 	}
 
-	
+
 	private Fruit FindVD (int i)
 	{   
 		robot r = Robots.get(i);
@@ -557,16 +552,15 @@ public class AutoGame implements Runnable
 				else	x= max;
 
 
-			double	distance = ag.shortestPathDist (r.getSrc(), x);
+				double	distance = ag.shortestPathDist (r.getSrc(), x);
 				if( fruit.getValue()/distance > Maxvalue ) {
 					Maxvalue =  fruit.getValue()/distance;
-					 ans = fruit; 
+					ans = fruit; 
 				}
-	           }
+			}
 		}
-	ans.setUnderTarget(true);
 		return ans;
-	
+
 	}
 	private  Fruit FindClosestFruit(int i)
 	{  
@@ -582,21 +576,21 @@ public class AutoGame implements Runnable
 				int min = Math.min( edge.getDest()  ,edge.getSrc() );
 				int max = Math.max( edge.getDest()  ,edge.getSrc() );
 				if(fruit.getType() == 1)	x= min;
-				else	x= max;
+				else	x = max;
 
 
 				tmp = ag.shortestPathDist (r.getSrc(), x);
-				if( tmp <MinDis ) {
+				if( tmp < MinDis ) {
 					MinDis =  tmp;
-					ans =fruit; 
+					ans = fruit; 
 				}
 
 			}
 		}
 		if(ans!=null)  {
 			ans.setUnderTarget(true);
-			return ans; }
-
+			return ans; 
+		}
 		else {
 			System.out.println("didnt find fruit");
 			ans = findFruit();
@@ -620,13 +614,12 @@ public class AutoGame implements Runnable
 
 
 	private  void moveRobots(game_service game, graph gg) throws IOException, InterruptedException {
-
 		//				for(Fruit fruit : fruitA) {
 		//					fruit.setUnderTarget(false);
 		//				}
 
 		long tmp = game.timeToEnd();
-		if(Math.abs(time-tmp)>95) {
+		if(Math.abs(time-tmp)>97) {
 			time = tmp;
 			List<String> log = game.move();
 			if(log!=null) {
@@ -650,10 +643,14 @@ public class AutoGame implements Runnable
 
 
 							if(r.ShortWay.size()==1  || r.ShortWay.size()==0) {
-								// send the robot i to build a new short way list to next node for it
+								if(src==0 && count<1) {
+									Level0Newlist();
+									count++; 
 
-								if(speed>=4)nextNode2(i,gg, src);
-								else nextNode(i, gg, src);
+								}
+								// send the robot i to build a new short way list to next node for it						
+								//if(speed>=4)nextNode2(i,gg, src);
+								else	nextNode(i, gg, src);
 							}
 							//System.out.println(r.ShortWay);
 							if(r.ShortWay.size()>1)
@@ -678,6 +675,14 @@ public class AutoGame implements Runnable
 	 * @return
 	 * @throws InterruptedException 
 	 */
+
+
+	private List<node_data> Level0Newlist(){
+		Graph_Algo g= new Graph_Algo(gr);
+		List<node_data> ans = g.shortestPath(0, 10);
+		return ans;
+	}
+
 	private  void nextNode(int i,graph g, int src) throws InterruptedException {
 		robot r = Robots.get(i);
 		SetEdgeFruit();
@@ -685,9 +690,9 @@ public class AutoGame implements Runnable
 		int dest;
 		n=(DNode) gr.getNode(src);
 		Fruit fruit;
-		if(i==1)	 fruit  =Node5to12(i);
-		else if(i==2) fruit = Node0to14(i) ;
-		else fruit  =FindClosestFruit(i);
+	if	(i==1)	 fruit = findFruit();
+		//		else if(i==2) fruit = Node0to14(i) ;
+		fruit =FindVD(i) ;
 
 		//else fruit = FindFarFruit(i);	
 		System.out.println(i);
@@ -726,9 +731,9 @@ public class AutoGame implements Runnable
 			Fruit fruit;
 			n=(DNode) gr.getNode(src);
 
-			if(i==0) fruit= FindClosestFruit(i);
-		//	else if(i==2) fruit =Node0to20(i);
-			else fruit   =FindClosestFruit(i);
+			if(i==0)  fruit =FindClosestFruit(i);
+			else if(i==2) fruit =Node0to20(i);
+			else fruit =FindClosestFruit(i);
 			Dedge edge =(Dedge) fruit.getEdge();
 			int min = Math.min( edge.getDest()  ,edge.getSrc() );
 			int max = Math.max( edge.getDest()  ,edge.getSrc() );
@@ -760,7 +765,18 @@ public class AutoGame implements Runnable
 	public void run() {
 		try {
 			startGameGUI();
+			String res = game.toString();
+			String remark = scenario_num+".kml";
+			//File file=new File("C:\Users\Yair\Documents\GitHub\Ex3\"+remark);
 			System.out.println(game.toString());
+
+			FileReader f=new FileReader(remark);
+			BufferedReader r=new BufferedReader(f);
+			String s = "";
+			while(r.readLine()!=null) {
+				s+=r.readLine()+"\n";
+			}
+			game.sendKML(s); 
 		}
 
 		catch (JSONException e) {
