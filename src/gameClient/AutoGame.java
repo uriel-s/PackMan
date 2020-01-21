@@ -556,9 +556,11 @@ public class AutoGame implements Runnable
 				if( fruit.getValue()/distance > Maxvalue ) {
 					Maxvalue =  fruit.getValue()/distance;
 					ans = fruit; 
+					
 				}
 			}
 		}
+	    ans.setUnderTarget(true);
 		return ans;
 
 	}
@@ -619,13 +621,12 @@ public class AutoGame implements Runnable
 		//				}
 
 		long tmp = game.timeToEnd();
-		if(Math.abs(time-tmp)>97) {
+		
+		if(Math.abs(time-tmp)>100) {
 			time = tmp;
 			List<String> log = game.move();
 			if(log!=null) {
-				//long t = game.timeToEnd();
-				long t = game.timeToEnd();
-
+				
 				for(int i=0;i<log.size();i++) {
 					String robot_json = log.get(i);
 					try {
@@ -643,14 +644,14 @@ public class AutoGame implements Runnable
 
 
 							if(r.ShortWay.size()==1  || r.ShortWay.size()==0) {
-								if(src==0 && count<1) {
-									Level0Newlist();
-									count++; 
-
-								}
+//								if(src==0 && count<1) {
+//									Level0Newlist();
+//									count++; 
+//
+//								}
 								// send the robot i to build a new short way list to next node for it						
 								//if(speed>=4)nextNode2(i,gg, src);
-								else	nextNode(i, gg, src);
+								nextNode(i, gg, src);
 							}
 							//System.out.println(r.ShortWay);
 							if(r.ShortWay.size()>1)
@@ -690,7 +691,7 @@ public class AutoGame implements Runnable
 		int dest;
 		n=(DNode) gr.getNode(src);
 		Fruit fruit;
-	if	(i==1)	 fruit = findFruit();
+	//if	(i==0)	 fruit = FindVD(i);
 		//		else if(i==2) fruit = Node0to14(i) ;
 		fruit =FindVD(i) ;
 
@@ -731,9 +732,9 @@ public class AutoGame implements Runnable
 			Fruit fruit;
 			n=(DNode) gr.getNode(src);
 
-			if(i==0)  fruit =FindClosestFruit(i);
-			else if(i==2) fruit =Node0to20(i);
-			else fruit =FindClosestFruit(i);
+			//if(i==0)  fruit =FindVD(i);
+			//else if(i==2) fruit =findFruit();
+		 fruit =FindVD(i);
 			Dedge edge =(Dedge) fruit.getEdge();
 			int min = Math.min( edge.getDest()  ,edge.getSrc() );
 			int max = Math.max( edge.getDest()  ,edge.getSrc() );
