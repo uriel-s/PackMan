@@ -344,18 +344,19 @@ public class AutoGame implements Runnable
 		return zero;
 	}
 	
-	private Fruit  Node0to20(int i)
+	
+	private Fruit  Node5to12(int i)
 	{
 		Dedge e= new Dedge();
-		e.setDest(14);
-		e.setSrc(13);
+		e.setDest(10);
+		e.setSrc(11);
 		Fruit	zero=new Fruit(1, 0, new Point3D(0,0));
 		zero.setEdge(e);	
 		for(Fruit fruit : fruitA)
 		{
 			//if(fruit.isUnderTarget()==false) {
 			int src=fruit.getEdge().getSrc();
-			if(src>=0&&src<=17) {
+			if(src>=5&&src<=13) {
 				fruit.setUnderTarget(true);
 				return fruit;
 			}
@@ -563,7 +564,8 @@ public class AutoGame implements Runnable
 				}
 	           }
 		}
-	return ans;
+	ans.setUnderTarget(true);
+		return ans;
 	
 	}
 	private  Fruit FindClosestFruit(int i)
@@ -624,7 +626,7 @@ public class AutoGame implements Runnable
 		//				}
 
 		long tmp = game.timeToEnd();
-		if(Math.abs(time-tmp)>93) {
+		if(Math.abs(time-tmp)>95) {
 			time = tmp;
 			List<String> log = game.move();
 			if(log!=null) {
@@ -683,9 +685,9 @@ public class AutoGame implements Runnable
 		int dest;
 		n=(DNode) gr.getNode(src);
 		Fruit fruit;
-		if(i==1)	 fruit = Node47to40(i);
+		if(i==1)	 fruit  =Node5to12(i);
 		else if(i==2) fruit = Node0to14(i) ;
-		else fruit =FindVD(i) ;
+		else fruit  =FindClosestFruit(i);
 
 		//else fruit = FindFarFruit(i);	
 		System.out.println(i);
@@ -724,9 +726,9 @@ public class AutoGame implements Runnable
 			Fruit fruit;
 			n=(DNode) gr.getNode(src);
 
-			if(i==0)  fruit =FindVD(i);
-			else if(i==2) fruit =Node0to20(i);
-			else fruit =FindClosestFruit(i);
+			if(i==0) fruit= FindClosestFruit(i);
+		//	else if(i==2) fruit =Node0to20(i);
+			else fruit   =FindClosestFruit(i);
 			Dedge edge =(Dedge) fruit.getEdge();
 			int min = Math.min( edge.getDest()  ,edge.getSrc() );
 			int max = Math.max( edge.getDest()  ,edge.getSrc() );
