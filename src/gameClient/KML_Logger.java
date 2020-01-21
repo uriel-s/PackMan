@@ -77,10 +77,10 @@ public class KML_Logger {
 
 
 	public KML_Logger() throws JSONException, IOException
-	{
+	{ // BufferedWriter writer = new BufferedWriter(new FileWriter("0.kml"));
 		//kmlStr = new StringBuffer();
-	//	file  = new File("ben.kml");
-		//writer = new FileWriter(file);
+		file  = new File("09.kml");
+		writer = new FileWriter(file);
 		//Create the file
 /*		try {
 			if (file.createNewFile())
@@ -97,8 +97,9 @@ public class KML_Logger {
 		//this.AG = ag;
 		//this.myGG = new MyGameGUI();
 		// AG.run();
-		System.out.println("new  kml");
 		KMLstring= startStr();
+	    writer.write(KMLstring);
+
 		//		writer.write(KMLstring);
 
 
@@ -143,7 +144,7 @@ public class KML_Logger {
 		"    <styleUrl>#check-hide-children</styleUrl>\r\n" ;
 
 	}
-public  void addveretex() {
+public  void addveretex() throws IOException {
 Iterator<DNode> I = (Iterator<DNode>) AutoGame.gr.getVErtex();
 	while(I.hasNext()) 
 	{ DNode n = I.next();
@@ -153,7 +154,9 @@ Iterator<DNode> I = (Iterator<DNode>) AutoGame.gr.getVErtex();
 		double y=p.y();
 		String pos="";
 		pos+=x+","+y;
-	KMLstring+=AddBlock(0, date, pos);
+	String v=AddBlock(0, date, pos);
+	
+    writer.write(v);
 	}
 } 
 	public String AddBlock( int type ,String date,String coorndinate )
@@ -209,8 +212,10 @@ Iterator<DNode> I = (Iterator<DNode>) AutoGame.gr.getVErtex();
 			//kmlStr.append(block);
 			//System.out.print(block);
 			//		writer.write( block);
-			KMLstring+= block;
-		}
+			
+		    writer.write(block);
+	
+	}
 	
 	public void AddFruit(Fruit fruit) throws IOException
 		{
@@ -220,7 +225,7 @@ Iterator<DNode> I = (Iterator<DNode>) AutoGame.gr.getVErtex();
 			//kmlStr.append(block);
 			//System.out.print(block);
 			//writer.write( block);
-			KMLstring+= block;
+		    writer.write(block);
 
 		}
 
@@ -259,11 +264,10 @@ Iterator<DNode> I = (Iterator<DNode>) AutoGame.gr.getVErtex();
 		//kmlStr.append("</Document>\r\n" + "</kml>") ;
 
 		//writer.write(kmlStr+"");
-		KMLstring +="</Document>\r\n" + "</kml>";
+		KMLstring ="</Document>\r\n" + "</kml>";
 		System.out.println("the end2");
 		//	if(delete==true) file.delete();
 	
-		    BufferedWriter writer = new BufferedWriter(new FileWriter("23.kml"));
 		    writer.write(KMLstring);
 		     
 		    writer.close();

@@ -15,7 +15,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.css.Counter;
 
+import com.sun.xml.internal.ws.api.pipe.FiberContextSwitchInterceptorFactory;
+
 import Server.Game_Server;
+import Server.fruits;
 import Server.game_service;
 import algorithms.Graph_Algo;
 import dataStructure.DGraph;
@@ -48,9 +51,9 @@ public class AutoGame implements Runnable
 	boolean delete;
 	static int counter =0;
 	private Thread t;
-    private static long time;
-    
-    
+	private static long time;
+
+
 	//constructor
 	public AutoGame() throws JSONException, IOException
 	{
@@ -66,7 +69,7 @@ public class AutoGame implements Runnable
 		PaintRobots();
 		t = new Thread(this);
 		t.start();
-		
+
 	}
 
 	/**
@@ -280,45 +283,112 @@ public class AutoGame implements Runnable
 	 * find what edges the fruit locate on
 	 * @return
 	 */
-	private static Fruit findFruit() {
+	private  void SetEdgeFruit() {
 		Collection<node_data> search = gr.getV();
 		for(Fruit fruit : fruitA) {
-			if(fruit.isUnderTarget() == false) {
 
-				for (node_data d : search) {
-					int k = d.getKey();
+			for (node_data d : search) {
+				int k = d.getKey();
 
-					for(edge_data e : gr.getE(k)) {
-						DNode src = (DNode) gr.getNode(e.getSrc());
-						DNode dst = (DNode) gr.getNode(e.getDest());
+				for(edge_data e : gr.getE(k)) {
+					DNode src = (DNode) gr.getNode(e.getSrc());
+					DNode dst = (DNode) gr.getNode(e.getDest());
 
-						double SrcToDSt = src.getLocation().distance2D(dst.getLocation());
+					double SrcToDSt = src.getLocation().distance2D(dst.getLocation());
 
-						//System.out.println("fruit :"+ fruit.getValue()+ " underTarget = "+fruit.isUnderTarget());                       
+					//System.out.println("fruit :"+ fruit.getValue()+ " underTarget = "+fruit.isUnderTarget());                       
 
-						double src2fruit = src.getLocation().distance2D(fruit.getPos());
-						double fruit2dest = fruit.getPos().distance2D(dst.getLocation());
-						double ans= src2fruit + fruit2dest;
+					double src2fruit = src.getLocation().distance2D(fruit.getPos());
+					double fruit2dest = fruit.getPos().distance2D(dst.getLocation());
+					double ans= src2fruit + fruit2dest;
 
 
-						if(  Math.abs(SrcToDSt - ans) < 0.00001  ) 
-						{ 
-							fruit.setEdge(e);
-							return fruit ;
+					if(  Math.abs(SrcToDSt - ans) < 0.0000001  ) 
+					{ 
+						fruit.setEdge(e);
+						//	return fruit ;
 
-						}
 					}
 				}
-
 			}
+
+
 		}
-		return null;
+		//return fruitA.get(0);
 	}
 
+	private  Fruit findFruit() {
+		for(Fruit fruit : fruitA)
+			if(fruit.isUnderTarget()==false) {
+				//	fruit.setUnderTarget(true);;
+				return fruit;
+			}
+		return fruitA.get(0);
+	}
 
+	
+	private Fruit  Node47to40(int i)
+	{
+		Dedge e= new Dedge();
+		e.setDest(42);
+		e.setSrc(43);
+		Fruit	zero=new Fruit(1, 0, new Point3D(0,0));
+		zero.setEdge(e);	
+		for(Fruit fruit : fruitA)
+		{
+			//if(fruit.isUnderTarget()==false) {
+			int src=fruit.getEdge().getSrc();
+			if(src>=40&&src<=47) {
+				fruit.setUnderTarget(true);
+				return fruit;
+			}
+		}
+		return zero;
+	}
+	
+	private Fruit  Node0to20(int i)
+	{
+		Dedge e= new Dedge();
+		e.setDest(14);
+		e.setSrc(13);
+		Fruit	zero=new Fruit(1, 0, new Point3D(0,0));
+		zero.setEdge(e);	
+		for(Fruit fruit : fruitA)
+		{
+			//if(fruit.isUnderTarget()==false) {
+			int src=fruit.getEdge().getSrc();
+			if(src>=0&&src<=17) {
+				fruit.setUnderTarget(true);
+				return fruit;
+			}
+		}
+		return zero;
+	}
 
-
-
+	
+	
+	
+	
+	
+	
+	private Fruit  Node0to14(int i)
+	{
+		Dedge e= new Dedge();
+		e.setDest(2);
+		e.setSrc(3);
+		Fruit	zero=new Fruit(1, 0, new Point3D(0,0));
+		zero.setEdge(e);	
+		for(Fruit fruit : fruitA)
+		{
+			//if(fruit.isUnderTarget()==false) {
+			int src=fruit.getEdge().getSrc();
+			if(src>=0&&src<=14) {
+				fruit.setUnderTarget(true);
+				return fruit;
+			}
+		}
+		return zero;
+	}
 
 
 	private void locateRobots() throws JSONException {
@@ -329,6 +399,7 @@ public class AutoGame implements Runnable
 		for(int i = 0 ; i < rs ; i++) {
 			try {
 				int Bestp ;
+				SetEdgeFruit();
 				Fruit fruit= findFruit();
 				//if (fruit==null) System.out.println("this fruit is NULL!!!");
 				Dedge edge =(Dedge) fruit.getEdge();
@@ -350,6 +421,10 @@ public class AutoGame implements Runnable
 		for(Fruit fruit : fruitA) {
 			fruit.setUnderTarget(false);
 		}
+
+
+
+
 
 		PaintRobots();
 	}
@@ -375,6 +450,7 @@ public class AutoGame implements Runnable
 				StdDraw.setPenColor(Color.black);
 				StdDraw.setPenRadius(0.03);
 				StdDraw.picture(r.getPos().x(), r.getPos().y(),"ice.png",0.0005,0.0005);
+				StdDraw.text(r.getPos().x(), r.getPos().y()+0.0005, ""+id);
 			}
 		}
 
@@ -404,7 +480,6 @@ public class AutoGame implements Runnable
 
 			StdDraw.enableDoubleBuffering();
 			StdDraw.clear();
-			moveRobots(game, gr);
 			//			if( i==3500) 
 			//			{    kml.AddLoop();
 			//			i=0;
@@ -413,6 +488,7 @@ public class AutoGame implements Runnable
 			paint();
 			PaintFruits();
 			PaintRobots();
+			moveRobots(game, gr);
 
 			int grade = FindGrade();
 			long t = game.timeToEnd();
@@ -432,37 +508,103 @@ public class AutoGame implements Runnable
 
 	}
 
-	//	private static void FindClosestFruit(robot r)
-	//	{  
-	//		findFruit();
-	//		Graph_Algo ag= new Graph_Algo(gr);
-	//		double MinDis=Double.MAX_VALUE;
-	//		int x;
-	//		List<node_data > ShortWay =r.ShortWay;
-	//
-	//		for(Fruit fruit : fruitA) {
-	//			if (fruit.getEdge()!=null && !fruit.isUnderTarget()) {
-	//				edge_data edge = fruit.getEdge();
-	//				int min = Math.min( edge.getDest()  ,edge.getSrc() );
-	//				int max = Math.max( edge.getDest()  ,edge.getSrc() );
-	//				if(fruit.getType() == 1)	x= min;
-	//				else	x= max;
-	//
-	//
-	//				DNode n = (DNode) gr.getNode(x);    
-	//				List<node_data > tmp = ag.shortestPath(r.getSrc(), x);
-	//				if( tmp.size() <MinDis ) {
-	//					MinDis =  tmp.size();
-	//					ShortWay=tmp;
-	//					fruit.setUnderTarget(true);
-	//
-	//				}
-	//
-	//			}
-	//		}
-	//		r.ShortWay=ShortWay;
-	//
-	//	}
+
+	private  Fruit FindFarFruit(int i)
+	{robot r = Robots.get(i);
+	findFruit();
+	Graph_Algo ag= new Graph_Algo(gr);
+	double MaxDis=Double.MIN_VALUE;
+	double tmp;
+	int x;
+	Fruit ans =null;
+	for(Fruit fruit : fruitA) {
+		if (fruit.getEdge()!=null) {
+			edge_data edge = fruit.getEdge();
+			int min = Math.min( edge.getDest()  ,edge.getSrc() );
+			int max = Math.max( edge.getDest()  ,edge.getSrc() );
+			if(fruit.getType() == 1)	x= min;
+			else	x= max;
+
+
+			tmp = ag.shortestPathDist (r.getSrc(), x);
+			if( tmp >MaxDis ) {
+				MaxDis =  tmp;
+				ans =fruit; 
+			}
+
+		}
+	}
+	if(ans!=null)  {
+		ans.setUnderTarget(true);
+	}
+	return ans; 
+	}
+
+	
+	private Fruit FindVD (int i)
+	{   
+		robot r = Robots.get(i);
+		Graph_Algo ag= new Graph_Algo(gr);
+		double Maxvalue=0;
+		double tmp;
+		int x;
+		Fruit ans =null;
+		for(Fruit fruit : fruitA) {
+			if (fruit.isUnderTarget()==false) {
+				edge_data edge = fruit.getEdge();
+				int min = Math.min( edge.getDest()  ,edge.getSrc() );
+				int max = Math.max( edge.getDest()  ,edge.getSrc() );
+				if(fruit.getType() == 1)	x= min;
+				else	x= max;
+
+
+			double	distance = ag.shortestPathDist (r.getSrc(), x);
+				if( fruit.getValue()/distance > Maxvalue ) {
+					Maxvalue =  fruit.getValue()/distance;
+					 ans = fruit; 
+				}
+	           }
+		}
+	return ans;
+	
+	}
+	private  Fruit FindClosestFruit(int i)
+	{  
+		robot r = Robots.get(i);
+		Graph_Algo ag= new Graph_Algo(gr);
+		double MinDis=Double.MAX_VALUE;
+		double tmp;
+		int x;
+		Fruit ans =null;
+		for(Fruit fruit : fruitA) {
+			if (fruit.isUnderTarget()==false) {
+				edge_data edge = fruit.getEdge();
+				int min = Math.min( edge.getDest()  ,edge.getSrc() );
+				int max = Math.max( edge.getDest()  ,edge.getSrc() );
+				if(fruit.getType() == 1)	x= min;
+				else	x= max;
+
+
+				tmp = ag.shortestPathDist (r.getSrc(), x);
+				if( tmp <MinDis ) {
+					MinDis =  tmp;
+					ans =fruit; 
+				}
+
+			}
+		}
+		if(ans!=null)  {
+			ans.setUnderTarget(true);
+			return ans; }
+
+		else {
+			System.out.println("didnt find fruit");
+			ans = findFruit();
+			if (ans==null) { System.out.println("didnt find fruit 2"); ans=fruitA.get(0);}
+		}
+		return ans;
+	}
+
 
 
 	/**
@@ -472,54 +614,60 @@ public class AutoGame implements Runnable
 	 * @throws IOException 
 	 * @throws InterruptedException 
 	 */
+
+
+
+
+
 	private  void moveRobots(game_service game, graph gg) throws IOException, InterruptedException {
 
-		for(Fruit fruit : fruitA) {
-			fruit.setUnderTarget(false);
-		}
-		
+		//				for(Fruit fruit : fruitA) {
+		//					fruit.setUnderTarget(false);
+		//				}
+
 		long tmp = game.timeToEnd();
-		if(Math.abs(time-tmp)>100) {
+		if(Math.abs(time-tmp)>93) {
 			time = tmp;
-		List<String> log = game.move();
-		if(log!=null) {
-			//long t = game.timeToEnd();
-			long t = game.timeToEnd();
-			
-			  
-			for(int i=0;i<log.size();i++) {
-				String robot_json = log.get(i);
-				try {
+			List<String> log = game.move();
+			if(log!=null) {
+				//long t = game.timeToEnd();
+				long t = game.timeToEnd();
 
-					JSONObject line = new JSONObject(robot_json);
-					JSONObject ttt = line.getJSONObject("Robot");
-					int rid = ttt.getInt("id");
-					int src = ttt.getInt("src");
-					int dest = ttt.getInt("dest");
+				for(int i=0;i<log.size();i++) {
+					String robot_json = log.get(i);
+					try {
 
-					if(dest==-1) {
+						JSONObject line = new JSONObject(robot_json);
+						JSONObject ttt = line.getJSONObject("Robot");
+						int rid = ttt.getInt("id");
+						int src = ttt.getInt("src");
+						int dest = ttt.getInt("dest");
+						int speed = ttt.getInt("speed");
 
-						robot r = Robots.get(i);
-						r.setSrc(src);
+						if(dest==-1) {
+							robot r = Robots.get(i);
+							r.setSrc(src);
 
-						
-						if(r.ShortWay.size()==1  || r.ShortWay.size()==0) {
-							// send the robot i to build a new short way list to next node for it
-							nextNode(i,gg, src);
+
+							if(r.ShortWay.size()==1  || r.ShortWay.size()==0) {
+								// send the robot i to build a new short way list to next node for it
+
+								if(speed>=4)nextNode2(i,gg, src);
+								else nextNode(i, gg, src);
+							}
+							//System.out.println(r.ShortWay);
+							if(r.ShortWay.size()>1)
+								dest=r.ShortWay.get(1).getKey();
+							game.chooseNextEdge(rid, dest);
+							r.ShortWay.remove(0);
+							//System.out.println("Turn to node: "+dest+"  time to end:"+(t/1000));
+							//System.out.println(ttt);
 						}
-						//System.out.println(r.ShortWay);
-						if(r.ShortWay.size()>1)
-							dest=r.ShortWay.get(1).getKey();
-						game.chooseNextEdge(rid, dest);
-						r.ShortWay.remove(0);
-						//System.out.println("Turn to node: "+dest+"  time to end:"+(t/1000));
-						//System.out.println(ttt);
 					}
+
+					catch (JSONException e) {e.printStackTrace();}
 				}
-			
-				catch (JSONException e) {e.printStackTrace();}
 			}
-		}
 		}
 	}
 	/**
@@ -530,14 +678,57 @@ public class AutoGame implements Runnable
 	 * @return
 	 * @throws InterruptedException 
 	 */
-	private static void nextNode(int i,graph g, int src) throws InterruptedException {
+	private  void nextNode(int i,graph g, int src) throws InterruptedException {
 		robot r = Robots.get(i);
+		SetEdgeFruit();
+		DNode n = new DNode();
+		int dest;
+		n=(DNode) gr.getNode(src);
+		Fruit fruit;
+		if(i==1)	 fruit = Node47to40(i);
+		else if(i==2) fruit = Node0to14(i) ;
+		else fruit =FindVD(i) ;
+
+		//else fruit = FindFarFruit(i);	
+		System.out.println(i);
+		Dedge edge =(Dedge) fruit.getEdge();
+		int min = Math.min( edge.getDest()  ,edge.getSrc() );
+		int max = Math.max( edge.getDest()  ,edge.getSrc() );
+		//fruit.setUnderTarget(false);
+
+		int temp;
+		if(fruit.getType() == -1) {
+			dest= min;
+			temp = max;
+		} else {
+			dest = max ;
+			temp = min;
+		}
+		Graph_Algo graph_algo= new Graph_Algo(g);
+		if(src != dest) {
+			List<node_data > ShortWay = graph_algo.shortestPath(src, dest);
+			r.ShortWay=ShortWay;
+		} else {
+			List<node_data > ShortWay = graph_algo.shortestPath(src, temp);
+			r.ShortWay=ShortWay;
+		}
+
+	}
+
+
+
+	private  void nextNode2(int i,graph g, int src) throws InterruptedException {
+		robot r = Robots.get(i);
+		SetEdgeFruit();
 		{
 			DNode n = new DNode();
 			int dest;
+			Fruit fruit;
 			n=(DNode) gr.getNode(src);
-			Fruit fruit = findFruit();
 
+			if(i==0)  fruit =FindVD(i);
+			else if(i==2) fruit =Node0to20(i);
+			else fruit =FindClosestFruit(i);
 			Dedge edge =(Dedge) fruit.getEdge();
 			int min = Math.min( edge.getDest()  ,edge.getSrc() );
 			int max = Math.max( edge.getDest()  ,edge.getSrc() );
@@ -565,14 +756,13 @@ public class AutoGame implements Runnable
 
 	}
 
-
 	@Override
 	public void run() {
 		try {
 			startGameGUI();
 			System.out.println(game.toString());
 		}
-		
+
 		catch (JSONException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
