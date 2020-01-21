@@ -187,6 +187,8 @@ public class AutoGame implements Runnable
 			JFrame in = new JFrame();
 			String level = JOptionPane.showInputDialog(in,"choose a level [0-23]:");
 			int scenario_num =Integer.parseInt(level); 
+			int id = 311170476;
+			Game_Server.login(id);
 			this.game = Game_Server.getServer(scenario_num);
 			String g = this.game.getGraph();
 			return g;
