@@ -79,10 +79,13 @@ public class KML_Logger {
 	public KML_Logger() throws JSONException, IOException
 	{ // BufferedWriter writer = new BufferedWriter(new FileWriter("0.kml"));
 		//kmlStr = new StringBuffer();
-		file  = new File("09.kml");
+
+		String name=""+ AutoGame.scenario_num;
+		name+=".kml";
+		file  = new File(name);
 		writer = new FileWriter(file);
 		//Create the file
-/*		try {
+		/*		try {
 			if (file.createNewFile())
 			{
 				System.out.println("File is created!");
@@ -98,7 +101,7 @@ public class KML_Logger {
 		//this.myGG = new MyGameGUI();
 		// AG.run();
 		KMLstring= startStr();
-	    writer.write(KMLstring);
+		writer.write(KMLstring);
 
 		//		writer.write(KMLstring);
 
@@ -144,26 +147,26 @@ public class KML_Logger {
 		"    <styleUrl>#check-hide-children</styleUrl>\r\n" ;
 
 	}
-public  void addveretex() throws IOException {
-Iterator<DNode> I = (Iterator<DNode>) AutoGame.gr.getVErtex();
-	while(I.hasNext()) 
-	{ DNode n = I.next();
+	public  void addveretex() throws IOException {
+		Iterator<DNode> I = (Iterator<DNode>) AutoGame.gr.getVErtex();
+		while(I.hasNext()) 
+		{ DNode n = I.next();
 		String date =Date();
 		Point3D p = n.getLocation();
 		double x=p.x();
 		double y=p.y();
 		String pos="";
 		pos+=x+","+y;
-	String v=AddBlock(0, date, pos);
-	
-    writer.write(v);
-	}
-} 
+		String v=AddBlock(0, date, pos);
+
+		writer.write(v);
+		}
+	} 
 	public String AddBlock( int type ,String date,String coorndinate )
 	{ String ans="";
-		//node
-		if (type == 0) {
-		 ans = "<Placemark>\r\n" + 
+	//node
+	if (type == 0) {
+		ans = "<Placemark>\r\n" + 
 				"      <TimeStamp>\r\n" + 
 				"        <when>"+date+"</when>\r\n" + 
 				"      </TimeStamp>\r\n" + 
@@ -175,7 +178,7 @@ Iterator<DNode> I = (Iterator<DNode>) AutoGame.gr.getVErtex();
 
 	//robot
 	if(type == 1) {
-		 ans = "<Placemark>\r\n" + 
+		ans = "<Placemark>\r\n" + 
 				"      <TimeStamp>\r\n" + 
 				"        <when>"+date+"</when>\r\n" + 
 				"      </TimeStamp>\r\n" + 
@@ -184,11 +187,11 @@ Iterator<DNode> I = (Iterator<DNode>) AutoGame.gr.getVErtex();
 				"        <coordinates>"+coorndinate+"</coordinates>\r\n" + 
 				"      </Point>\r\n" + 
 				"    </Placemark>\r\n" ; }
-	
-	
+
+
 	//fruit
 	if(type == 2) {
-		 ans = "<Placemark>\r\n" + 
+		ans = "<Placemark>\r\n" + 
 				"      <TimeStamp>\r\n" + 
 				"        <when>"+date+"</when>\r\n" + 
 				"      </TimeStamp>\r\n" + 
@@ -197,37 +200,37 @@ Iterator<DNode> I = (Iterator<DNode>) AutoGame.gr.getVErtex();
 				"        <coordinates>"+coorndinate+"</coordinates>\r\n" + 
 				"      </Point>\r\n" + 
 				"    </Placemark>\r\n" ; }
-	
-	
-	
+
+
+
 	return ans;
 	}
 
 	public void AddRobot(robot r) throws IOException
 	{  
 
-			String coorndinate= RobotLocToString(r);
-			String date = Date();
-			String block =AddBlock(1,date, coorndinate);
-			//kmlStr.append(block);
-			//System.out.print(block);
-			//		writer.write( block);
-			
-		    writer.write(block);
-	
-	}
-	
-	public void AddFruit(Fruit fruit) throws IOException
-		{
-			String coorndinate= FruitLocToString(fruit);
-			String date = Date();
-			String block =AddBlock(2,date, coorndinate);
-			//kmlStr.append(block);
-			//System.out.print(block);
-			//writer.write( block);
-		    writer.write(block);
+		String coorndinate= RobotLocToString(r);
+		String date = Date();
+		String block =AddBlock(1,date, coorndinate);
+		//kmlStr.append(block);
+		//System.out.print(block);
+		//		writer.write( block);
 
-		}
+		writer.write(block);
+
+	}
+
+	public void AddFruit(Fruit fruit) throws IOException
+	{
+		String coorndinate= FruitLocToString(fruit);
+		String date = Date();
+		String block =AddBlock(2,date, coorndinate);
+		//kmlStr.append(block);
+		//System.out.print(block);
+		//writer.write( block);
+		writer.write(block);
+
+	}
 
 
 
@@ -267,10 +270,10 @@ Iterator<DNode> I = (Iterator<DNode>) AutoGame.gr.getVErtex();
 		KMLstring ="</Document>\r\n" + "</kml>";
 		System.out.println("the end2");
 		//	if(delete==true) file.delete();
-	
-		    writer.write(KMLstring);
-		     
-		    writer.close();
+
+		writer.write(KMLstring);
+
+		writer.close();
 
 	}
 
