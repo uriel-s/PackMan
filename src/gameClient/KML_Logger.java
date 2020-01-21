@@ -79,7 +79,7 @@ public class KML_Logger {
 	public KML_Logger() throws JSONException, IOException
 	{ // BufferedWriter writer = new BufferedWriter(new FileWriter("0.kml"));
 		//kmlStr = new StringBuffer();
-		file  = new File("ben.kml");
+		file  = new File("09.kml");
 		writer = new FileWriter(file);
 		//Create the file
 /*		try {
