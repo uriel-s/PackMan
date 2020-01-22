@@ -9,8 +9,8 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/json_lib"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
-	<classpathentry kind="lib" path="C:/Users/Yair/Desktop/Ex4_v0.32/Ex4_v0.31/lib/java-json.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Yair/Desktop/Ex4_v0.32/Ex4_v0.31/lib/mysql-connector-java-5.1.47.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Yair/Desktop/Ex4_v0.33/Ex4_v0.33/lib/GameServer_v0.33.jar"/>
+	<classpathentry kind="lib" path="C:/Users/USER/Documents/GitHub/Ex3/lib/GameServer_v0.33.jar"/>
+	<classpathentry kind="lib" path="C:/Users/USER/Documents/GitHub/Ex3/lib/java-json.jar"/>
+	<classpathentry kind="lib" path="C:/Users/USER/Documents/GitHub/Ex3/lib/mysql-connector-java-5.1.47.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
