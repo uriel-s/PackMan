@@ -193,7 +193,7 @@ public class AutoGame implements Runnable
 		try {
 			JFrame in = new JFrame();
 			String level = JOptionPane.showInputDialog(in,"choose a level [0-23]:");
-			 scenario_num =Integer.parseInt(level); 
+			scenario_num =Integer.parseInt(level); 
 			int id = 311170476;
 			Game_Server.login(id);
 			this.game = Game_Server.getServer(scenario_num);
@@ -226,7 +226,7 @@ public class AutoGame implements Runnable
 				String pos = ttt.getString("pos");
 				Point3D p= getloc(pos);
 				Fruit f = new Fruit(type,value,p);
-					kml.AddFruit(f);
+				kml.AddFruit(f);
 
 				fruitA.add(f);
 				// -1 indicates a banana
@@ -427,7 +427,7 @@ public class AutoGame implements Runnable
 		}
 		PaintRobots();
 	}
-	
+
 	private void PaintRobots() throws JSONException {
 		JSONObject line;
 		line = new JSONObject(game.toString());
@@ -498,7 +498,7 @@ public class AutoGame implements Runnable
 		}
 
 		System.out.println("the end");
-			kml.End();
+		kml.End();
 
 	}
 
@@ -556,11 +556,11 @@ public class AutoGame implements Runnable
 				if( fruit.getValue()/distance > Maxvalue ) {
 					Maxvalue =  fruit.getValue()/distance;
 					ans = fruit; 
-					
+
 				}
 			}
 		}
-	    ans.setUnderTarget(true);
+		ans.setUnderTarget(true);
 		return ans;
 
 	}
@@ -621,12 +621,12 @@ public class AutoGame implements Runnable
 		//				}
 
 		long tmp = game.timeToEnd();
-		
+
 		if(Math.abs(time-tmp)>100) {
 			time = tmp;
 			List<String> log = game.move();
 			if(log!=null) {
-				
+
 				for(int i=0;i<log.size();i++) {
 					String robot_json = log.get(i);
 					try {
@@ -644,18 +644,27 @@ public class AutoGame implements Runnable
 
 
 							if(r.ShortWay.size()==1  || r.ShortWay.size()==0) {
-//								if(src==0 && count<1) {
-//									Level0Newlist();
-//									count++; 
-//
-//								}
-								// send the robot i to build a new short way list to next node for it						
-								//if(speed>=4)nextNode2(i,gg, src);
+
 								nextNode(i, gg, src);
 							}
 							//System.out.println(r.ShortWay);
-							if(r.ShortWay.size()>1)
-								dest=r.ShortWay.get(1).getKey();
+
+
+							dest=r.ShortWay.get(1).getKey();
+							//else		dest=r.ShortWay.get(0).getKey();
+							if(i==0 && game.timeToEnd()<49000&&game.timeToEnd()>47800 &&src==2 ) {
+								dest =6;
+							}
+							if(i==0 && game.timeToEnd()<47000&&game.timeToEnd()>46300 &&src==6 ) {
+								System.out.println("sssss");
+								dest =2;
+							}
+
+							if(i==0 && game.timeToEnd()<46000&&game.timeToEnd()>457850  ) {
+								System.out.println("sssss");
+								dest =6;
+							}
+							
 							game.chooseNextEdge(rid, dest);
 							r.ShortWay.remove(0);
 							//System.out.println("Turn to node: "+dest+"  time to end:"+(t/1000));
@@ -680,7 +689,7 @@ public class AutoGame implements Runnable
 
 	private List<node_data> Level0Newlist(){
 		Graph_Algo g= new Graph_Algo(gr);
-		List<node_data> ans = g.shortestPath(0, 10);
+		List<node_data> ans = g.shortestPath(40, 12);
 		return ans;
 	}
 
@@ -689,11 +698,13 @@ public class AutoGame implements Runnable
 		SetEdgeFruit();
 		DNode n = new DNode();
 		int dest;
-		n=(DNode) gr.getNode(src);
+		n=(DNode) gr.getNode(0);
 		Fruit fruit;
-	//if	(i==0)	 fruit = FindVD(i);
+		if	(i==1)	{  fruit =fruitA.get(1);
+		fruit.setUnderTarget(true);
+		}
 		//		else if(i==2) fruit = Node0to14(i) ;
-		fruit =FindVD(i) ;
+		else	fruit =fruitA.get(0);
 
 		//else fruit = FindFarFruit(i);	
 		System.out.println(i);
@@ -724,17 +735,22 @@ public class AutoGame implements Runnable
 
 
 	private  void nextNode2(int i,graph g, int src) throws InterruptedException {
+		System.out.println("next node2");
 		robot r = Robots.get(i);
 		SetEdgeFruit();
 		{
 			DNode n = new DNode();
 			int dest;
 			Fruit fruit;
-			n=(DNode) gr.getNode(src);
+			n=(DNode) gr.getNode(0);
 
 			//if(i==0)  fruit =FindVD(i);
 			//else if(i==2) fruit =findFruit();
-		 fruit =FindVD(i);
+			if	(i==1)	{  fruit =fruitA.get(0);
+
+			}
+			//		else if(i==2) fruit = Node0to14(i) ;
+			else	fruit =fruitA.get(1);
 			Dedge edge =(Dedge) fruit.getEdge();
 			int min = Math.min( edge.getDest()  ,edge.getSrc() );
 			int max = Math.max( edge.getDest()  ,edge.getSrc() );
