@@ -38,7 +38,7 @@ public class SimpleDB {
 				Connection connection = 
 						DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcUserPassword);
 				Statement statement = connection.createStatement();
-				String allCustomersQuery = "SELECT * FROM Logs where userID="+id;
+				String allCustomersQuery = "SELECT * FROM Logs where levelID=0";
 			
 				ResultSet resultSet = statement.executeQuery(allCustomersQuery);
 				int ind =0;

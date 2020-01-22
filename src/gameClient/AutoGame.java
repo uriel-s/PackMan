@@ -32,6 +32,7 @@ import dataStructure.edge_data;
 import dataStructure.graph;
 import dataStructure.node_data;
 import dataStructure.robot;
+import sun.font.FontRunIterator;
 import utils.Point3D;
 import utils.StdDraw;
 import java.util.Date;
@@ -193,7 +194,7 @@ public class AutoGame implements Runnable
 		try {
 			JFrame in = new JFrame();
 			String level = JOptionPane.showInputDialog(in,"choose a level [0-23]:");
-			 scenario_num =Integer.parseInt(level); 
+			scenario_num =Integer.parseInt(level); 
 			int id = 311170476;
 			Game_Server.login(id);
 			this.game = Game_Server.getServer(scenario_num);
@@ -226,7 +227,7 @@ public class AutoGame implements Runnable
 				String pos = ttt.getString("pos");
 				Point3D p= getloc(pos);
 				Fruit f = new Fruit(type,value,p);
-					kml.AddFruit(f);
+				kml.AddFruit(f);
 
 				fruitA.add(f);
 				// -1 indicates a banana
@@ -375,18 +376,18 @@ public class AutoGame implements Runnable
 
 
 
-	private Fruit  Node0to14(int i)
+	private Fruit  Node16to23(int i)
 	{
 		Dedge e= new Dedge();
-		e.setDest(2);
-		e.setSrc(3);
+		e.setDest(10);
+		e.setSrc(9);
 		Fruit	zero=new Fruit(1, 0, new Point3D(0,0));
 		zero.setEdge(e);	
 		for(Fruit fruit : fruitA)
 		{
 			//if(fruit.isUnderTarget()==false) {
 			int src=fruit.getEdge().getSrc();
-			if(src>=0&&src<=14) {
+			if(src>=16&&src<=234) {
 				fruit.setUnderTarget(true);
 				return fruit;
 			}
@@ -427,7 +428,7 @@ public class AutoGame implements Runnable
 		}
 		PaintRobots();
 	}
-	
+
 	private void PaintRobots() throws JSONException {
 		JSONObject line;
 		line = new JSONObject(game.toString());
@@ -498,7 +499,11 @@ public class AutoGame implements Runnable
 		}
 
 		System.out.println("the end");
-			kml.End();
+		kml.End();
+		int repeat = JOptionPane.showConfirmDialog(null, "Would you like to see Statistics?");
+		if(repeat == JOptionPane.YES_OPTION) {
+			Statistics();
+		}
 
 	}
 
@@ -556,11 +561,11 @@ public class AutoGame implements Runnable
 				if( fruit.getValue()/distance > Maxvalue ) {
 					Maxvalue =  fruit.getValue()/distance;
 					ans = fruit; 
-					
+
 				}
 			}
 		}
-	    ans.setUnderTarget(true);
+		ans.setUnderTarget(true);
 		return ans;
 
 	}
@@ -616,17 +621,14 @@ public class AutoGame implements Runnable
 
 
 	private  void moveRobots(game_service game, graph gg) throws IOException, InterruptedException {
-		//				for(Fruit fruit : fruitA) {
-		//					fruit.setUnderTarget(false);
-		//				}
 
 		long tmp = game.timeToEnd();
-		
-		if(Math.abs(time-tmp)>100) {
+
+		if(Math.abs(time-tmp)>98) {
 			time = tmp;
 			List<String> log = game.move();
 			if(log!=null) {
-				
+
 				for(int i=0;i<log.size();i++) {
 					String robot_json = log.get(i);
 					try {
@@ -642,19 +644,31 @@ public class AutoGame implements Runnable
 							robot r = Robots.get(i);
 							r.setSrc(src);
 
-
 							if(r.ShortWay.size()==1  || r.ShortWay.size()==0) {
-//								if(src==0 && count<1) {
-//									Level0Newlist();
-//									count++; 
-//
-//								}
+								if(src== 40 && i==1) {
+									r.ShortWay=Level0Newlist();
+								}
+
+								//if(src==2&& i==0 )dest=6;
 								// send the robot i to build a new short way list to next node for it						
-								//if(speed>=4)nextNode2(i,gg, src);
-								nextNode(i, gg, src);
+								else	if(speed>=3)nextNode2(i,gg, src);
+								else nextNode2(i, gg, src);
 							}
+							if(src==2&& i==0&& count<1 )   {
+								r.ShortWay.clear();
+								//								r.ShortWay.add(gr.getNode(src));
+								r.ShortWay=Level13Newlist();
+								count++;
+								System.out.println("level0");
+							}
+							else			if(i == 0 && game.timeToEnd()<25000 && game.timeToEnd()>17000) {
+								dest = 17;
+							}
+							//							else			if(i==1 &&src==7&& game.timeToEnd()<18100 && game.timeToEnd()>16000) {
+							//								dest=8;
+							//							}
 							//System.out.println(r.ShortWay);
-							if(r.ShortWay.size()>1)
+							else		if(r.ShortWay.size()>1)
 								dest=r.ShortWay.get(1).getKey();
 							game.chooseNextEdge(rid, dest);
 							r.ShortWay.remove(0);
@@ -676,12 +690,32 @@ public class AutoGame implements Runnable
 	 * @return
 	 * @throws InterruptedException 
 	 */
+	private List<node_data> Level13Newlist(){
+		Graph_Algo g= new Graph_Algo(gr);
+		List<node_data> ans = g.shortestPath(2, 7);
+		return ans;
+	}
+
 
 
 	private List<node_data> Level0Newlist(){
 		Graph_Algo g= new Graph_Algo(gr);
-		List<node_data> ans = g.shortestPath(0, 10);
+		List<node_data> ans = g.shortestPath(40, 12);
 		return ans;
+	}
+
+	private Fruit otherRobotFruit(int i) {
+		robot r = Robots.get(0);
+		Fruit f= r.fruit;
+		for(Fruit fruit : fruitA)
+		{
+			System.out.println(f);
+			System.out.println(fruit);
+
+			if (!(fruit.equals(f)))return f;
+		}	
+		System.out.println("going to find fruit");
+		return FindClosestFruit(i);
 	}
 
 	private  void nextNode(int i,graph g, int src) throws InterruptedException {
@@ -691,9 +725,9 @@ public class AutoGame implements Runnable
 		int dest;
 		n=(DNode) gr.getNode(src);
 		Fruit fruit;
-	//if	(i==0)	 fruit = FindVD(i);
+		if	(i==0)	 fruit = fruitA.get(1) ;
 		//		else if(i==2) fruit = Node0to14(i) ;
-		fruit =FindVD(i) ;
+		else  fruit =fruitA.get(0);
 
 		//else fruit = FindFarFruit(i);	
 		System.out.println(i);
@@ -732,9 +766,9 @@ public class AutoGame implements Runnable
 			Fruit fruit;
 			n=(DNode) gr.getNode(src);
 
-			//if(i==0)  fruit =FindVD(i);
-			//else if(i==2) fruit =findFruit();
-		 fruit =FindVD(i);
+			if(i==0)			fruit=fruitA.get(0);
+			else  fruit  =fruitA.get(1);
+			// fruit =FindVD(i);
 			Dedge edge =(Dedge) fruit.getEdge();
 			int min = Math.min( edge.getDest()  ,edge.getSrc() );
 			int max = Math.max( edge.getDest()  ,edge.getSrc() );
@@ -761,7 +795,34 @@ public class AutoGame implements Runnable
 		}
 
 	}
-
+	/**
+	 * shows the statistics getting from the DB
+	 */
+	public void Statistics() {
+		try {
+			JFrame in = new JFrame();
+			String ids = JOptionPane.showInputDialog(in,"enter an id : ");
+			int id  = Integer.parseInt(ids);
+			String levels = JOptionPane.showInputDialog(in,"enter a level ");
+			int level  = Integer.parseInt(levels);
+			
+			int score = DBstatistics.bestScore(id, level);
+			int a = DBstatistics.currentLevel(id);
+			int b = DBstatistics.numOfGames(id);
+			int c = DBstatistics.Position(id, level);
+			
+			
+            JOptionPane.showMessageDialog(null,"the best score is: "+score+"\n the max user level is: "+a+"\n the position is: "+c+"\n the number of game played is: "+b);
+			
+			
+			
+			
+			
+		}
+		catch (Exception e) {
+			e.printStackTrace();	
+		}
+	}
 	@Override
 	public void run() {
 		try {
