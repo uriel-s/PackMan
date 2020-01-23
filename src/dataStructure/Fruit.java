@@ -63,13 +63,5 @@ public class Fruit {
 		this.edge = e;
 		
 	}
-   public static Fruit copy(Fruit f) {
-	   Fruit a = new Fruit();
-	   a.setType(f.getType()) ;
-	   a.setValue(f.getValue());		
-	   a.setPos(f.getPos());		
-	   a.setUnderTarget(f.isUnderTarget())	;	
-	   a.setEdge(f.getEdge());
-	   return a;
-   }
+
 }
