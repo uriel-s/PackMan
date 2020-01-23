@@ -164,10 +164,5 @@ public class DBstatistics {
 	}
 
 
-
-
-
-
-
 }
 
