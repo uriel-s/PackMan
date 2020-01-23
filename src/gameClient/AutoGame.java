@@ -356,15 +356,15 @@ public class AutoGame implements Runnable
 	private Fruit  Node0to20(int i)
 	{
 		Dedge e= new Dedge();
-		e.setDest(14);
-		e.setSrc(13);
+		e.setDest(10);
+		e.setSrc(11);
 		Fruit	zero=new Fruit(1, 0, new Point3D(0,0));
 		zero.setEdge(e);	
 		for(Fruit fruit : fruitA)
 		{
 			//if(fruit.isUnderTarget()==false) {
 			int src=fruit.getEdge().getSrc();
-			if(src>=0&&src<=17) {
+			if(src>=5&&src<=13) {
 				fruit.setUnderTarget(true);
 				return fruit;
 			}
