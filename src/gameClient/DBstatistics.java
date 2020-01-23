@@ -7,6 +7,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 public class DBstatistics {
 	public static final String jdbcUrl="jdbc:mysql://db-mysql-ams3-67328-do-user-4468260-0.db.ondigitalocean.com:25060/oop?useUnicode=yes&characterEncoding=UTF-8&useSSL=false";
@@ -119,6 +120,7 @@ public class DBstatistics {
 
 
 	public static int Position(int id,int level) {
+		ArrayList<Integer>  a = new ArrayList<>();
 		int ind =0;
 		int score=0;
 		int position=0;

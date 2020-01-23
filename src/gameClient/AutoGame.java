@@ -211,10 +211,12 @@ public class AutoGame implements Runnable
 	 * the correct location
 	 */
 	private void PaintFruits() 
-	{
+	{    
+		
 		JSONObject line;
 		try {
 			Iterator<String> f_iter = game.getFruits().iterator();
+		
 			fruitA.clear();
 			//read the fruits data , build a fruit object and add it to the list
 			while(f_iter.hasNext())
@@ -230,6 +232,7 @@ public class AutoGame implements Runnable
 				kml.AddFruit(f);
 
 				fruitA.add(f);
+				
 				// -1 indicates a banana
 				if(f.getType()==-1) {
 					StdDraw.setPenColor(Color.YELLOW);
@@ -325,7 +328,6 @@ public class AutoGame implements Runnable
 	private  Fruit findFruit() {
 		for(Fruit fruit : fruitA)
 			if(fruit.isUnderTarget()==false) {
-				//	fruit.setUnderTarget(true);;
 				return fruit;
 			}
 		return fruitA.get(0);
@@ -645,35 +647,13 @@ public class AutoGame implements Runnable
 							r.setSrc(src);
 
 							if(r.ShortWay.size()==1  || r.ShortWay.size()==0) {
-								if(src== 40 && i==1) {
-									r.ShortWay=Level0Newlist();
-								}
-
-								//if(src==2&& i==0 )dest=6;
-								// send the robot i to build a new short way list to next node for it						
-								else	if(speed>=3)nextNode2(i,gg, src);
-								else nextNode2(i, gg, src);
+								 nextNode(i, gg, src);
 							}
-							if(src==2&& i==0&& count<1 )   {
-								r.ShortWay.clear();
-								//								r.ShortWay.add(gr.getNode(src));
-								r.ShortWay=Level13Newlist();
-								count++;
-								System.out.println("level0");
-							}
-							else			if(i == 0 && game.timeToEnd()<25000 && game.timeToEnd()>17000) {
-								dest = 17;
-							}
-							//							else			if(i==1 &&src==7&& game.timeToEnd()<18100 && game.timeToEnd()>16000) {
-							//								dest=8;
-							//							}
-							//System.out.println(r.ShortWay);
-							else		if(r.ShortWay.size()>1)
+							if(r.ShortWay.size()>1)
 								dest=r.ShortWay.get(1).getKey();
 							game.chooseNextEdge(rid, dest);
 							r.ShortWay.remove(0);
-							//System.out.println("Turn to node: "+dest+"  time to end:"+(t/1000));
-							//System.out.println(ttt);
+							
 						}
 					}
 
@@ -725,9 +705,10 @@ public class AutoGame implements Runnable
 		int dest;
 		n=(DNode) gr.getNode(src);
 		Fruit fruit;
-		if	(i==0)	 fruit = fruitA.get(1) ;
+	//	if	(i==0)	
+			fruit = FindVD(i);
 		//		else if(i==2) fruit = Node0to14(i) ;
-		else  fruit =fruitA.get(0);
+		//else  fruit =fruitA.get(0);
 
 		//else fruit = FindFarFruit(i);	
 		System.out.println(i);
