@@ -641,34 +641,21 @@ public class AutoGame implements Runnable
 						if(dest==-1) {
 							robot r = Robots.get(i);
 							r.setSrc(src);
-
-
 							if(r.ShortWay.size()==1  || r.ShortWay.size()==0) {
+								//	System.out.println("shortway is : "+r.ShortWay);
+						
+							nextNode(i, gg, src);
 
-								nextNode(i, gg, src);
 							}
-							//System.out.println(r.ShortWay);
-
-
+							
+							
+							
 							dest=r.ShortWay.get(1).getKey();
 							//else		dest=r.ShortWay.get(0).getKey();
-							if(i==0 && game.timeToEnd()<49000&&game.timeToEnd()>47800 &&src==2 ) {
-								dest =6;
-							}
-							if(i==0 && game.timeToEnd()<47000&&game.timeToEnd()>46300 &&src==6 ) {
-								System.out.println("sssss");
-								dest =2;
-							}
-
-							if(i==0 && game.timeToEnd()<46000&&game.timeToEnd()>457850  ) {
-								System.out.println("sssss");
-								dest =6;
-							}
 							
 							game.chooseNextEdge(rid, dest);
 							r.ShortWay.remove(0);
-							//System.out.println("Turn to node: "+dest+"  time to end:"+(t/1000));
-							//System.out.println(ttt);
+							
 						}
 					}
 
@@ -685,8 +672,28 @@ public class AutoGame implements Runnable
 	 * @return
 	 * @throws InterruptedException 
 	 */
+	private List<node_data> Level3Newlist(){
+		Graph_Algo g= new Graph_Algo(gr);
+		List<node_data> ans = g.shortestPath(9, 0);
+		return ans;
+	}
 
-
+	private List<node_data> Level132Newlist(){
+		Graph_Algo g= new Graph_Algo(gr);
+		List<node_data> ans = g.shortestPath(0, 18);
+		return ans;
+	}
+	private List<node_data> Level133Newlist(){
+		Graph_Algo g= new Graph_Algo(gr);
+		List<node_data> ans = g.shortestPath(17, 12);
+		return ans;
+	}
+	private List<node_data> Level134Newlist(){
+		Graph_Algo g= new Graph_Algo(gr);
+		List<node_data> ans = g.shortestPath(33,7);
+		return ans;
+	}
+	
 	private List<node_data> Level0Newlist(){
 		Graph_Algo g= new Graph_Algo(gr);
 		List<node_data> ans = g.shortestPath(40, 12);
@@ -694,20 +701,20 @@ public class AutoGame implements Runnable
 	}
 
 	private  void nextNode(int i,graph g, int src) throws InterruptedException {
+
+
 		robot r = Robots.get(i);
 		SetEdgeFruit();
 		DNode n = new DNode();
 		int dest;
 		n=(DNode) gr.getNode(0);
 		Fruit fruit;
-		if	(i==1)	{  fruit =fruitA.get(1);
-		fruit.setUnderTarget(true);
+		
+		if	(i==0)	{fruit =FindVD(i);
 		}
-		//		else if(i==2) fruit = Node0to14(i) ;
-		else	fruit =fruitA.get(0);
-
-		//else fruit = FindFarFruit(i);	
-		System.out.println(i);
+		else if(i==1) fruit= findFruit();
+		else fruit= FindClosestFruit(i);
+		
 		Dedge edge =(Dedge) fruit.getEdge();
 		int min = Math.min( edge.getDest()  ,edge.getSrc() );
 		int max = Math.max( edge.getDest()  ,edge.getSrc() );
@@ -725,7 +732,9 @@ public class AutoGame implements Runnable
 		if(src != dest) {
 			List<node_data > ShortWay = graph_algo.shortestPath(src, dest);
 			r.ShortWay=ShortWay;
-		} else {
+
+		} 
+		else {
 			List<node_data > ShortWay = graph_algo.shortestPath(src, temp);
 			r.ShortWay=ShortWay;
 		}
@@ -746,11 +755,11 @@ public class AutoGame implements Runnable
 
 			//if(i==0)  fruit =FindVD(i);
 			//else if(i==2) fruit =findFruit();
-			if	(i==1)	{  fruit =fruitA.get(0);
+			if	(i==1)	{  fruit =FindClosestFruit(i);
 
 			}
 			//		else if(i==2) fruit = Node0to14(i) ;
-			else	fruit =fruitA.get(1);
+			else	fruit =findFruit();
 			Dedge edge =(Dedge) fruit.getEdge();
 			int min = Math.min( edge.getDest()  ,edge.getSrc() );
 			int max = Math.max( edge.getDest()  ,edge.getSrc() );

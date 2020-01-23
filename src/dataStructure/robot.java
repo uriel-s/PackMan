@@ -9,6 +9,7 @@ public class robot {
 	private int id;
 	private int speed;
 	private int src;
+	public node_data Tag;
 	private int dest;
 	private Point3D pos;
 	private double value;
