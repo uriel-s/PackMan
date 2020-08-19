@@ -1,5 +1,5 @@
 # Ex3
-this project is repesenting a game .(Packmen) using Gui and using DGraph project. (https://github.com/YairAn/Ex2.git) in our project we are taking all the informtuion from Jsons file , ech repesent a level in the game. for each level the jason file give the informtion for the fruits and the robots in the level. and graph (Nodes+Edges), and upload the info in a graph.
+this project is repesenting a game .(Packmen) using Gui and using DGraph project. (https://github.com/uriel-s/the-maze-of-waze-.git) in our project we are taking all the informtuion from Jsons file , ech repesent a level in the game. for each level the jason file give the informtion for the fruits and the robots in the level. and graph (Nodes+Edges), and upload the info in a graph.
 
 The robots travel on the graph in main to catch the red the fruits as fast as they can to gain points, The more you catch the speed of the robot is increase.
 
